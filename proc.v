@@ -3,15 +3,15 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	input Resetn, Clock, Run;
 	output Done;
 	output [8:0] BusWires;
-	parameter T0 = 2‚Äôb00, T1 = 2‚Äôb01, T2 = 2‚Äôb10, T3 = 2‚Äôb11;
-	parameter mv = 2‚Äôb00, mvi = 2‚Äôb01, add = 2‚Äôb10, sub = 2‚Äôb11;
+	parameter T0 = 2íb00, T1 = 2íb01, T2 = 2íb10, T3 = 2íb11;
+	parameter mv = 2íb00, mvi = 2íb01, add = 2íb10, sub = 2íb11;
 	//declare variables
 	reg [1:0] Tstep_Q;
 	reg [1:0] Tstep_D;
 	wire [2:0] I;
 	assign I = IR[1:3];
-	dec3to8 decX (IR[4:6], 1‚Äôb1, Xreg);
-	dec3to8 decY (IR[7:9], 1‚Äôb1, Yreg);
+	dec3to8 decX (IR[4:6], 1íb1, Xreg);
+	dec3to8 decY (IR[7:9], 1íb1, Yreg);
 	reg DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub;
 	// Control FSM state table
     always @(Tstep_Q, Run, Done)
@@ -44,9 +44,9 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 		case (Tstep_Q)
 		T0: // store DIN in IR in time step 0
 			begin
-			IRin = 1‚Äôb1;
+			IRin = 1íb1;
 			end
-		T1: //deÔ¨Åne signals in time step 1
+		T1: //de?ne signals in time step 1
 			case (I)
 				mv: 
 				begin
@@ -71,7 +71,7 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 					Ain = 1;
 				end
 			endcase
-		T2: //deÔ¨Åne signals in time step 2
+		T2: //de?ne signals in time step 2
 			case (I)
 				add:
 				begin
@@ -84,7 +84,7 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 					Gin = 1;
 					AddSub = 1;
 			endcase
-		T3: //deÔ¨Åne signals in time step 3
+		T3: //de?ne signals in time step 3
 			case (I)
 				add:
 				begin
@@ -100,11 +100,11 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 			endcase
 		endcase
 	end
-	// Control FSM Ô¨Çip-Ô¨Çops
+	// Control FSM ?ip-?ops
 	always @(posedge Clock, negedge Resetn)
 	if (!Resetn)
 	: : :
 	regn reg_0 (BusWires, Rin[0], Clock, R0);
 	: : : instantiate other registers and the adder/subtracter unit
-: : : deÔ¨Åne the bus
+: : : de?ne the bus
 endmodule
