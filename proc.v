@@ -12,7 +12,7 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	assign I = IR[1:3];
 	dec3to8 decX (IR[4:6], 1’b1, Xreg);
 	dec3to8 decY (IR[7:9], 1’b1, Yreg);
-	wire RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub;
+	reg DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub;
 	// Control FSM state table
     always @(Tstep_Q, Run, Done)
     begin
