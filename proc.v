@@ -10,8 +10,8 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	reg [1:0] Tstep_D;
 	wire [2:0] I;
 	assign I = IR[1:3];
-	dec3to8 decX (IR[4:6], 1’b1, Xreg);
-	dec3to8 decY (IR[7:9], 1’b1, Yreg);
+	dec3to8 decX (IR[4:6], 1'b1, Xreg);
+	dec3to8 decY (IR[7:9], 1'b1, Yreg);
 	reg DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub;
 	// Control FSM state table
     always @(Tstep_Q, Run, Done)
@@ -40,11 +40,11 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	// Control FSM outputs
 	always @(Tstep_Q or I or Xreg or Yreg)
 	begin
-		: : : specify initial values
+		//: : : specify initial values
 		case (Tstep_Q)
 		T0: // store DIN in IR in time step 0
 			begin
-			IRin = 1’b1;
+			IRin = 1'b1;
 			end
 		T1: //de?ne signals in time step 1
 			case (I)
@@ -103,8 +103,8 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	// Control FSM ?ip-?ops
 	always @(posedge Clock, negedge Resetn)
 	if (!Resetn)
-	: : :
+	//: : :
 	regn reg_0 (BusWires, Rin[0], Clock, R0);
-	: : : instantiate other registers and the adder/subtracter unit
-: : : de?ne the bus
+	//: : : instantiate other registers and the adder/subtracter unit
+//: : : de?ne the bus
 endmodule
