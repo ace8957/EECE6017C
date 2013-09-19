@@ -3,8 +3,8 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	input Resetn, Clock, Run;
 	output Done;
 	output [8:0] BusWires;
-	parameter T0 = 2’b00, T1 = 2’b01, T2 = 2’b10, T3 = 2’b11;
-	parameter mv = 2’b00, mvi = 2’b01, add = 2’b10, sub = 2’b11;
+	parameter T0 = 2'b00, T1 = 2'b01, T2 = 2'b10, T3 = 2'b11;
+	parameter mv = 2'b00, mvi = 2'b01, add = 2'b10, sub = 2'b11;
 	//declare variables
 	reg [1:0] Tstep_Q;
 	reg [1:0] Tstep_D;
