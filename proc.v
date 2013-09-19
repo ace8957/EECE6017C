@@ -13,7 +13,7 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	dec3to8 decX (IR[4:6], 1'b1, Xreg);
 	dec3to8 decY (IR[7:9], 1'b1, Yreg);
 	reg DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub;
-	// Control FSM state table
+	// Control FSM state table change
     always @(Tstep_Q, Run, Done)
     begin
         case (Tstep_Q)

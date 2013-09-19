@@ -1,4 +1,4 @@
-module dec3to8(W, En, Y);
+module dec3to8(W, En, Y); //change
 	input [2:0] W;
 	input En;
 	output [0:7] Y;
