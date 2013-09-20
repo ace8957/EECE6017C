@@ -21,15 +21,11 @@
  * B (9-bit, Little Endian) [in] - Second operand, 2's complement signed integer
  * Out (9-bit, Little Endian) [out] - Result of operation, 2's complement signed integer
  */
-module addsub(Sub, A, B, Out)
+module addsub(Sub, A, B, Out);
 	input [8:0] A, B;
+	input Sub;
 	output [8:0] Out;
 	
-	if(Sub == 1'b1) begin
-		assign Out = A - B;
-	end
-	else begin
-		assign Out = A + B;
-	end
+	assign Out = Sub ? A - B : A + B;
 	
 endmodule
