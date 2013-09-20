@@ -52,7 +52,7 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	reg [0:9] busDriver; ///< [R0out, ..., R7out, Gout, DINout]
 	
 	// Control Signals
-	reg DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub;
+	reg IRin, DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub;
  
 	assign I = IRoutWires[8:6];
 	dec3to8 decX (IR[4:6], 1'b1, Xreg);
@@ -151,6 +151,18 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	always @(posedge Clock, negedge Resetn) begin
 		if (!Resetn) begin
 			// Reset all FSM flip-flops
+			busDriver = 10'b0000000000;
+			DINout = 0;
+			RYout = 0;
+			RYin = 0;
+			RXout = 0;
+			RXin = 0;
+			Ain = 0;
+			Gin = 0;
+			Gout = 0;
+			AddSub = 0;
+			Tstep_Q = 2'b00;
+			Tstep_D = 2'b00;
 		end
 		else begin // Check control signals and set appropriate flip-flops
 		//RYin, RXin, Ain, Gin, AddSub;
