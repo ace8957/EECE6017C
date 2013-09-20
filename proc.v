@@ -28,8 +28,8 @@
 module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	input [8:0] DIN;
 	input Resetn, Clock, Run;
-	output Done;
-	output [8:0] BusWires;
+	output reg Done;
+	output reg [8:0] BusWires;
 
 	parameter T0 = 2'b00, T1 = 2'b01, T2 = 2'b10, T3 = 2'b11;
 	parameter mv = 2'b00, mvi = 2'b01, add = 2'b10, sub = 2'b11;
@@ -55,8 +55,8 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	reg IRin, DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub;
  
 	assign I = IRoutWires[8:6];
-	dec3to8 decX (IR[4:6], 1'b1, Xreg);
-	dec3to8 decY (IR[7:9], 1'b1, Yreg);
+	dec3to8 decX (IRoutWires[5:3], 1'b1, regX);
+	dec3to8 decY (IRoutWires[2:0], 1'b1, regY);
 		
 	// Control FSM state table change
     always @(Tstep_Q, Run, Done)
@@ -83,74 +83,197 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
     end
 
 	// Control FSM outputs
-	always @(Tstep_Q or I or Xreg or Yreg)
+	always @(Tstep_Q or I or regX or regY)
 	begin
 		//: : : specify initial values
+		//reg IRin, DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub;
 		case (Tstep_Q)
 		T0: // store DIN in IR in time step 0
 			begin
 			IRin = 1;
 			Done = 0;
+			DINout = 0;
+			RYout = 0;
+			RYin = 0;
+			RXout = 0;
+			RXin = 0;
+			Ain = 0;
+			Gin = 0;
+			Gout = 0;
+			AddSub = 0;
 			end
 		T1: //define signals in time step 1
 			case (I)
 				mv: 
 				begin
-					RYout = 1;
-					RXin = 1;
+					IRin = 0;
 					Done = 1;
+					DINout = 0;
+					RYout = 1;
+					RYin = 0;
+					RXout = 0;
+					RXin = 1;
+					Ain = 0;
+					Gin = 0;
+					Gout = 0;
+					AddSub = 0;					
 				end
 				mvi:
 				begin
-					DINout = 1;
-					RXin = 1;
+					IRin = 0;
 					Done = 1;
+					DINout = 1;
+					RYout = 0;
+					RYin = 0;
+					RXout = 0;
+					RXin = 1;
+					Ain = 0;
+					Gin = 0;
+					Gout = 0;
+					AddSub = 0;
 				end
 				add:
 				begin
+					IRin = 0;
+					Done = 0;
+					DINout = 0;
+					RYout = 0;
+					RYin = 0;
 					RXout = 1;
+					RXin = 0;
 					Ain = 1;
+					Gin = 0;
+					Gout = 0;
+					AddSub = 0;					
 				end
 				sub:
 				begin
+					IRin = 0;
+					Done = 0;
+					DINout = 0;
+					RYout = 0;
+					RYin = 0;
 					RXout = 1;
+					RXin = 0;
 					Ain = 1;
+					Gin = 0;
+					Gout = 0;
+					AddSub = 0;					
+				end
+				default:
+				begin
+				IRin = 1;
+				Done = 0;
+				DINout = 0;
+				RYout = 0;
+				RYin = 0;
+				RXout = 0;
+				RXin = 0;
+				Ain = 0;
+				Gin = 0;
+				Gout = 0;
+				AddSub = 0;
 				end
 			endcase
 		T2: //define signals in time step 2
 			case (I)
 				add:
 				begin
+					IRin = 0;
+					Done = 0;
+					DINout = 0;
 					RYout = 1;
+					RYin = 0;
+					RXout = 0;
+					RXin = 0;
+					Ain = 0;
 					Gin = 1;
+					Gout = 0;
+					AddSub = 0;					
 				end
 				sub:
 				begin
+					IRin = 0;
+					Done = 0;
+					DINout = 0;
 					RYout = 1;
+					RYin = 0;
+					RXout = 0;
+					RXin = 0;
+					Ain = 0;
 					Gin = 1;
+					Gout = 0;
 					AddSub = 1;
+				end
+				default:
+				begin
+					IRin = 1;
+					Done = 0;
+					DINout = 0;
+					RYout = 0;
+					RYin = 0;
+					RXout = 0;
+					RXin = 0;
+					Ain = 0;
+					Gin = 0;
+					Gout = 0;
+					AddSub = 0;
+				end
 			endcase
 		T3: //define signals in time step 3
 			case (I)
 				add:
 				begin
-					Gout = 1;
-					RXin = 1;
+					IRin = 0;
 					Done = 1;
+					DINout = 0;
+					RYout = 0;
+					RYin = 0;
+					RXout = 0;
+					RXin = 1;
+					Ain = 0;
+					Gin = 0;
+					Gout = 1;
+					AddSub = 0;					
 				end
 				sub:
 				begin
-					Gout = 1;
-					RXin = 1;
+					IRin = 0;
 					Done = 1;
+					DINout = 0;
+					RYout = 0;
+					RYin = 0;
+					RXout = 0;
+					RXin = 1;
+					Ain = 0;
+					Gin = 0;
+					Gout = 1;
+					AddSub = 0;					
+				end
+				default:
+				begin
+					IRin = 1;
+					Done = 0;
+					DINout = 0;
+					RYout = 0;
+					RYin = 0;
+					RXout = 0;
+					RXin = 0;
+					Ain = 0;
+					Gin = 0;
+					Gout = 0;
+					AddSub = 0;
+				end
 			endcase
 		endcase
+		Tstep_Q <= Tstep_D;
 	end
 	
 	// Control FSM flip-flops
 	always @(posedge Clock, negedge Resetn) begin
 		if (!Resetn) begin
 			// Reset all FSM flip-flops
+			/*
 			busDriver = dinout;
 			DINout = 0;
 			RYout = 0;
@@ -163,6 +286,7 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 			AddSub = 0;
 			Tstep_Q = 2'b00;
 			Tstep_D = 2'b00;
+			*/
 		end
 		else begin // Check control signals and set appropriate flip-flops
 		//RYin, RXin, Ain, Gin, AddSub;
@@ -171,10 +295,10 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 				busDriver = 10'b0000000001;
 			end
 			else if(RXout && !(DINout || RYout || Gout)) begin
-				busDriver = {regX, 0, 0};
+				busDriver = {regX, 1'b0, 1'b0};
 			end
 			else if(RYout && !(RXout || DINout || Gout)) begin
-				busDriver = {regY, 0, 0};
+				busDriver = {regY, 1'b0, 1'b0};
 			end
 			else if(Gout && !(RXout || RYout || DINout)) begin
 				busDriver = 10'b0000000010;
@@ -235,23 +359,26 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	addsub Addsub(AddSub, AoutWires, BusWires, GinWires);
 
 	// Define the bus
-	case(busDriver)
-		reg0: assign BusWires = R0;
-		reg1: assign BusWires = R1;
-		reg2: assign BusWires = R2;
-		reg3: assign BusWires = R3;
-		reg4: assign BusWires = R4;
-		reg5: assign BusWires = R5;
-		reg6: assign BusWires = R6;
-		reg7: assign BusWires = R7;
-		gout: assign BusWires = GoutWires;
-		dinout: assign BusWires = DIN;
-		default:
-		begin
-			$display("Undefined bus driver!! Defaulting to DIN!!\n");
-			assign BusWires = DIN;
-		end
-	endcase
+	always @ (busDriver, R0, R1, R2, R3, R4, R5, R6, R7, GoutWires, DIN) begin
+		case(busDriver)
+			reg0: BusWires <= R0;
+			reg1: BusWires <= R1;
+			reg2: BusWires <= R2;
+			reg3: BusWires <= R3;
+			reg4: BusWires <= R4;
+			reg5: BusWires <= R5;
+			reg6: BusWires <= R6;
+			reg7: BusWires <= R7;
+			gout: BusWires <= GoutWires;
+			dinout: BusWires <= DIN;
+			default:
+			begin
+				$display("Undefined bus driver!! Defaulting to DIN!!\n");
+				BusWires <= DIN;
+			end
+		endcase
+	end
+
 	
 	
 endmodule
