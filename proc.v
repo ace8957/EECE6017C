@@ -151,7 +151,7 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	always @(posedge Clock, negedge Resetn) begin
 		if (!Resetn) begin
 			// Reset all FSM flip-flops
-			busDriver = 10'b0000000000;
+			busDriver = dinout;
 			DINout = 0;
 			RYout = 0;
 			RYin = 0;
