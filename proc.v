@@ -49,6 +49,11 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	reg [1:0] Tstep_D;
 	wire [2:0] I;
 	wire [0:7] regX, regY; ///<-- These are 1-hot encoding, Big Endian!!
+	wire [8:0] IRoutWires;
+	wire [8:0] GinWires, GoutWires;
+	wire [8:0] AoutWires;
+	// Register input signals
+	reg [0:7] Rin;
 	reg [0:9] busDriver; ///< [R0out, ..., R7out, Gout, DINout]
 	
 	// Control Signals
@@ -321,8 +326,6 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	end
 	
 	/** General Purpose Register Instantiations **/
-	// Register input signals
-	reg [0:7] Rin;
 	
 	// Register outputs
 	wire [8:0] R0, R1, R2, R3, R4, R5, R6, R7;
@@ -345,15 +348,13 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	regn reg_7(BusWires, Rin[7], Clock, R7);
 	
 	/** Register A **/
-	wire [8:0] AoutWires;
 	regn reg_a(BusWires, Ain, Clock, AoutWires);
 	
 	/** Register G **/
-	wire [8:0] GinWires, GoutWires;
+
 	regn reg_g(GinWires, Gin, Clock, GoutWires);
 	
 	/** Instruction Register **/
-	wire [8:0] IRoutWires;
 	regn reg_ir(DIN, IRin, Clock, IRoutWires);
 	
 	addsub Addsub(AddSub, AoutWires, BusWires, GinWires);
