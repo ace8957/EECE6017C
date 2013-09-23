@@ -1,4 +1,4 @@
-/* Simulator = ModelSim */
+/* Simulator = Quartus II Simulator */
 /*
 WARNING: Do NOT edit the input and output ports in this file in a text
 editor if you plan to continue editing the block that represents it in
@@ -861,10 +861,11 @@ TRANSITION_LIST("Clock")
 		REPEAT = 1;
 		NODE
 		{
-			REPEAT = 25;
-			LEVEL 0 FOR 5.0;
-			LEVEL 1 FOR 5.0;
+			REPEAT = 6;
+			LEVEL 0 FOR 20.0;
+			LEVEL 1 FOR 20.0;
 		}
+		LEVEL 0 FOR 10.0;
 	}
 }
 
@@ -1399,7 +1400,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "BusWires";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 0;
 	TREE_LEVEL = 0;
 	CHILDREN = 1, 2, 3, 4, 5, 6, 7, 8, 9;
@@ -1409,7 +1410,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "BusWires[8]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 1;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1419,7 +1420,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "BusWires[7]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 2;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1429,7 +1430,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "BusWires[6]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 3;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1439,7 +1440,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "BusWires[5]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 4;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1449,7 +1450,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "BusWires[4]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 5;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1459,7 +1460,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "BusWires[3]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 6;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1469,7 +1470,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "BusWires[2]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 7;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1479,7 +1480,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "BusWires[1]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 8;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1489,7 +1490,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "BusWires[0]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 9;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -2035,7 +2036,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "regn:reg_ir|Q";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 64;
 	TREE_LEVEL = 0;
 	CHILDREN = 65, 66, 67, 68, 69, 70, 71, 72, 73;
@@ -2045,7 +2046,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "regn:reg_ir|Q[8]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 65;
 	TREE_LEVEL = 1;
 	PARENT = 64;
@@ -2055,7 +2056,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "regn:reg_ir|Q[7]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 66;
 	TREE_LEVEL = 1;
 	PARENT = 64;
@@ -2065,7 +2066,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "regn:reg_ir|Q[6]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 67;
 	TREE_LEVEL = 1;
 	PARENT = 64;
@@ -2075,7 +2076,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "regn:reg_ir|Q[5]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 68;
 	TREE_LEVEL = 1;
 	PARENT = 64;
@@ -2085,7 +2086,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "regn:reg_ir|Q[4]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 69;
 	TREE_LEVEL = 1;
 	PARENT = 64;
@@ -2095,7 +2096,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "regn:reg_ir|Q[3]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 70;
 	TREE_LEVEL = 1;
 	PARENT = 64;
@@ -2105,7 +2106,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "regn:reg_ir|Q[2]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 71;
 	TREE_LEVEL = 1;
 	PARENT = 64;
@@ -2115,7 +2116,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "regn:reg_ir|Q[1]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 72;
 	TREE_LEVEL = 1;
 	PARENT = 64;
@@ -2125,7 +2126,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "regn:reg_ir|Q[0]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 73;
 	TREE_LEVEL = 1;
 	PARENT = 64;

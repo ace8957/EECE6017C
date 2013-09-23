@@ -46,7 +46,7 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 				 dinout = 10'b0000000001;
 	
 	//declare variables
-	reg [1:0] Tstep_Q;
+	reg [1:0] Tstep_Q /* synthesis preserve */;
 	reg [1:0] Tstep_D;
 	wire [2:0] I;
 	wire [0:7] regX, regY; ///<-- These are 1-hot encoding, Big Endian!!
