@@ -68,12 +68,17 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
     always @(Tstep_Q, Run, Done)
     begin
 		if(Done) begin
-			Tstep_D = 0;
+			Tstep_D <= T0;
 		end
 		else begin
         case (Tstep_Q)
             T0: // data is loaded into IR in this time step
-                Tstep_D <= T1;
+				begin
+				if(!Run)
+					Tstep_D <= T0;
+				else
+					Tstep_D <= T1;
+				end
             T1:
 				begin
 					Tstep_D <= T2;
