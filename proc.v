@@ -31,6 +31,7 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	output reg Done;
 	output reg [8:0] BusWires;
 
+
 	parameter T0 = 2'b00, T1 = 2'b01, T2 = 2'b10, T3 = 2'b11;
 	parameter mv = 2'b00, mvi = 2'b01, add = 2'b10, sub = 2'b11;
 	parameter reg0 = 10'b1000000000,
@@ -68,21 +69,21 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
     begin
         case (Tstep_Q)
             T0: // data is loaded into IR in this time step
-                if (!Run) Tstep_D = T0;
-                else Tstep_D = T1;
+                if (!Run) Tstep_D <= T0;
+                else Tstep_D <= T1;
             T1:
 				begin
-					if(!Done || Run) Tstep_D = T2;
-					else Tstep_D = T0;
+					if(!Done || Run) Tstep_D <= T2;
+					else Tstep_D <= T0;
 				end
 				T2:
 				begin
-					if(!Run) Tstep_D = T0;
-					else Tstep_D = T3;
+					if(!Run) Tstep_D <= T0;
+					else Tstep_D <= T3;
 				end
 				T3:
 				begin
-					Tstep_D = T0;
+					Tstep_D <= T0;
 				end
         endcase
     end
@@ -91,187 +92,120 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	always @(Tstep_Q or I or regX or regY)
 	begin
 		//: : : specify initial values
+		IRin <= 0;
+		Done <= 0;
+		DINout <= 0;
+		RYout <= 0;
+		RYin <= 0;
+		RXout <= 0;
+		RXin <= 0;
+		Ain <= 0;
+		Gin <= 0;
+		Gout <= 0;
+		AddSub <= 0;
 		//reg IRin, DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub;
 		case (Tstep_Q)
 		T0: // store DIN in IR in time step 0
 			begin
-			IRin = 1;
-			Done = 0;
-			DINout = 0;
-			RYout = 0;
-			RYin = 0;
-			RXout = 0;
-			RXin = 0;
-			Ain = 0;
-			Gin = 0;
-			Gout = 0;
-			AddSub = 0;
+			IRin <= 1;
 			end
 		T1: //define signals in time step 1
 			case (I)
 				mv: 
 				begin
-					IRin = 0;
-					Done = 1;
-					DINout = 0;
-					RYout = 1;
-					RYin = 0;
-					RXout = 0;
-					RXin = 1;
-					Ain = 0;
-					Gin = 0;
-					Gout = 0;
-					AddSub = 0;					
+					RYout <= 1;
+					RXin <= 1;
+					Done <= 1;			
 				end
 				mvi:
 				begin
-					IRin = 0;
-					Done = 1;
-					DINout = 1;
-					RYout = 0;
-					RYin = 0;
-					RXout = 0;
-					RXin = 1;
-					Ain = 0;
-					Gin = 0;
-					Gout = 0;
-					AddSub = 0;
+					Done <= 1;
+					DINout <= 1;
+					RXin <= 1;
 				end
 				add:
 				begin
-					IRin = 0;
-					Done = 0;
-					DINout = 0;
-					RYout = 0;
-					RYin = 0;
-					RXout = 1;
-					RXin = 0;
-					Ain = 1;
-					Gin = 0;
-					Gout = 0;
-					AddSub = 0;					
+					RXout <= 1;
+					Ain <= 1;
 				end
 				sub:
 				begin
-					IRin = 0;
-					Done = 0;
-					DINout = 0;
-					RYout = 0;
-					RYin = 0;
-					RXout = 1;
-					RXin = 0;
-					Ain = 1;
-					Gin = 0;
-					Gout = 0;
-					AddSub = 0;					
+					RXout <= 1;
+					Ain <= 1;
 				end
 				default:
 				begin
-				IRin = 1;
-				Done = 0;
-				DINout = 0;
-				RYout = 0;
-				RYin = 0;
-				RXout = 0;
-				RXin = 0;
-				Ain = 0;
-				Gin = 0;
-				Gout = 0;
-				AddSub = 0;
+				IRin <= 0;
+				Done <= 0;
+				DINout <= 0;
+				RYout <= 0;
+				RYin <= 0;
+				RXout <= 0;
+				RXin <= 0;
+				Ain <= 0;
+				Gin <= 0;
+				Gout <= 0;
+				AddSub <= 0;
 				end
 			endcase
 		T2: //define signals in time step 2
 			case (I)
 				add:
 				begin
-					IRin = 0;
-					Done = 0;
-					DINout = 0;
-					RYout = 1;
-					RYin = 0;
-					RXout = 0;
-					RXin = 0;
-					Ain = 0;
-					Gin = 1;
-					Gout = 0;
-					AddSub = 0;					
+					RYout <= 1;
+					Gin <= 1;				
 				end
 				sub:
 				begin
-					IRin = 0;
-					Done = 0;
-					DINout = 0;
-					RYout = 1;
-					RYin = 0;
-					RXout = 0;
-					RXin = 0;
-					Ain = 0;
-					Gin = 1;
-					Gout = 0;
-					AddSub = 1;
+					RYout <= 1;
+					Gin <= 1;
+					AddSub <= 1;
 				end
 				default:
 				begin
-					IRin = 1;
-					Done = 0;
-					DINout = 0;
-					RYout = 0;
-					RYin = 0;
-					RXout = 0;
-					RXin = 0;
-					Ain = 0;
-					Gin = 0;
-					Gout = 0;
-					AddSub = 0;
+					IRin <= 0;
+					Done <= 0;
+					DINout <= 0;
+					RYout <= 0;
+					RYin <= 0;
+					RXout <= 0;
+					RXin <= 0;
+					Ain <= 0;
+					Gin <= 0;
+					Gout <= 0;
+					AddSub <= 0;
 				end
 			endcase
 		T3: //define signals in time step 3
 			case (I)
 				add:
 				begin
-					IRin = 0;
-					Done = 1;
-					DINout = 0;
-					RYout = 0;
-					RYin = 0;
-					RXout = 0;
-					RXin = 1;
-					Ain = 0;
-					Gin = 0;
-					Gout = 1;
-					AddSub = 0;					
+					Done <= 1;
+					Gout <= 1;
+					RXin <= 1;
 				end
 				sub:
 				begin
-					IRin = 0;
-					Done = 1;
-					DINout = 0;
-					RYout = 0;
-					RYin = 0;
-					RXout = 0;
-					RXin = 1;
-					Ain = 0;
-					Gin = 0;
-					Gout = 1;
-					AddSub = 0;					
+					Done <= 1;
+					RXin <= 1;
+					Gout <= 1;				
 				end
 				default:
 				begin
-					IRin = 1;
-					Done = 0;
-					DINout = 0;
-					RYout = 0;
-					RYin = 0;
-					RXout = 0;
-					RXin = 0;
-					Ain = 0;
-					Gin = 0;
-					Gout = 0;
-					AddSub = 0;
+					IRin <= 0;
+					Done <= 0;
+					DINout <= 0;
+					RYout <= 0;
+					RYin <= 0;
+					RXout <= 0;
+					RXin <= 0;
+					Ain <= 0;
+					Gin <= 0;
+					Gout <= 0;
+					AddSub <= 0;
 				end
 			endcase
 		endcase
-		Tstep_Q <= Tstep_D;
 	end
 	
 	// Control FSM flip-flops
@@ -293,6 +227,8 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 			Tstep_D = 2'b00;
 			*/
 		end
+		else Tstep_Q <= Tstep_D;
+		/*
 		else begin // Check control signals and set appropriate flip-flops
 		//RYin, RXin, Ain, Gin, AddSub;
 			// Set the bus driver
@@ -323,6 +259,7 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 				Rin = Rin | regY;
 			end
 		end
+		*/
 	end
 	
 	/** General Purpose Register Instantiations **/
@@ -358,7 +295,53 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	regn reg_ir(DIN, IRin, Clock, IRoutWires);
 	
 	addsub Addsub(AddSub, AoutWires, BusWires, GinWires);
+	
 
+	always @ (RXout, RYout, Gout, DINout, regX, regY)
+	begin // Check control signals and set appropriate flip-flops
+		//RYin, RXin, Ain, Gin, AddSub;
+			// Set the bus driver
+			if(DINout && !(RXout || RYout || Gout)) begin
+				busDriver = 10'b0000000001;
+			end
+			else if(RXout && !(DINout || RYout || Gout)) begin
+				busDriver = {regX, 1'b0, 1'b0};
+			end
+			else if(RYout && !(RXout || DINout || Gout)) begin
+				busDriver = {regY, 1'b0, 1'b0};
+			end
+			else if(Gout && !(RXout || RYout || DINout)) begin
+				busDriver = 10'b0000000010;
+			end
+			else begin
+				$display("Ambiguous bus driver!! Setting to DINout\n");
+				busDriver = 10'b0000000001;
+			end
+			/*
+			// Ain and Gin are handled by the regn module
+			Rin = 8'b00000000;
+			if(RXin) begin
+				Rin = Rin | regX;
+			end
+			
+			if(RYin) begin
+				Rin = Rin | regY;
+			end
+			*/
+	end
+	
+	always @ (RXin, RYin, regX, regY)
+	begin
+		Rin = 8'b00000000;
+		if(RXin) begin
+			Rin = Rin | regX;
+		end
+		
+		if(RYin) begin
+			Rin = Rin | regY;
+		end
+	end
+	
 	// Define the bus
 	always @ (busDriver, R0, R1, R2, R3, R4, R5, R6, R7, GoutWires, DIN) begin
 		case(busDriver)
@@ -379,6 +362,7 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 			end
 		endcase
 	end
+	
 
 	
 	
