@@ -26,344 +26,362 @@
  * BusWires (9-bit, Little Endian) [out] - Holds that value of what is currently being sent around
  */
 module proc (DIN, Resetn, Clock, Run, Done, BusWires);
+	// Inputs
 	input [8:0] DIN;
-	input Resetn, Clock, Run;
-	output reg Done;
-	output reg [8:0] BusWires;
+	input Resetn;
+	input Clock;
+	input Run;
 
+	// Outputs
+	output Done;
+	output [8:0] BusWires;
 
-	parameter T0 = 2'b00, T1 = 2'b01, T2 = 2'b10, T3 = 2'b11;
-	parameter mv = 2'b00, mvi = 2'b01, add = 2'b10, sub = 2'b11;
-	parameter reg0 = 10'b1000000000,
-				 reg1 = 10'b0100000000,
-				 reg2 = 10'b0010000000,
-				 reg3 = 10'b0001000000,
-				 reg4 = 10'b0000100000,
-				 reg5 = 10'b0000010000,
-				 reg6 = 10'b0000001000,
-				 reg7 = 10'b0000000100,
-				 gout = 10'b0000000010,
-				 dinout = 10'b0000000001;
-	
-	//declare variables
-	reg [1:0] Tstep_Q;
-	reg [1:0] Tstep_D;
-	wire [2:0] I;
-	wire [0:7] regX, regY; ///<-- These are 1-hot encoding, Big Endian!!
-	wire [8:0] IRoutWires;
-	wire [8:0] GinWires, GoutWires;
-	wire [8:0] AoutWires;
-	// Register input signals
-	reg [0:7] Rin;
-	reg [0:9] busDriver; ///< [R0out, ..., R7out, Gout, DINout]
+	// Type Declaration for Input
+	wire [8:0] DIN;
+	wire Resetn;
+	wire Clock;
+	wire Run;
+	// Type Declaration for Output
+	reg Done;
+	wire [8:0] BusWires;
+
+	parameter T0 = 2'b00,
+				 T1 = 2'b01,
+				 T2 = 2'b10,
+				 T3 = 2'b11;
+	// FSM State Registers
+	reg [1:0] Tstep, Tstep_next;
 	
 	// Control Signals
-	reg IRin, DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub;
- 
-	assign I = IRoutWires[8:6];
-	dec3to8 decX (IRoutWires[5:3], 1'b1, regX);
-	dec3to8 decY (IRoutWires[2:0], 1'b1, regY);
-		
-	// Control FSM state table change
-    always @(Tstep_Q, Run, Done)
-    begin
-        case (Tstep_Q)
-            T0: // data is loaded into IR in this time step
-                if (!Run) Tstep_D <= T0;
-                else Tstep_D <= T1;
-            T1:
-				begin
-					if(!Done || Run) Tstep_D <= T2;
-					else Tstep_D <= T0;
-				end
-				T2:
-				begin
-					if(!Run) Tstep_D <= T0;
-					else Tstep_D <= T3;
-				end
-				T3:
-				begin
-					Tstep_D <= T0;
-				end
-        endcase
-    end
+	reg [7:0] Rin;
+	reg Ain, Gin, IRin;
+	reg DINout, Gout;
+	reg [7:0] Rout;
+	reg AddSub;
 
-	// Control FSM outputs
-	always @(Tstep_Q or I or regX or regY)
+	parameter mv  = 3'b000,
+				 mvi = 3'b001,
+				 add = 3'b010,
+				 sub = 3'b011;
+	// Helpful Sections of wire
+	wire [2:0] opcode;
+	assign opcode = wIR[8:6];
+	
+	wire [2:0] Rx3, Ry3;
+	assign Rx3 = wIR[5:3];
+	assign Ry3 = wIR[2:0];
+	
+	wire [7:0] Rx, Ry;
+	dec3to8 decodeX(Rx3, 1'b1, Rx);
+	dec3to8 decodeY(Ry3, 1'b1, Ry);
+	
+	// Concatenation of *out signals
+	wire [9:0] busMuxSelect; ///< {DINout, Gout, R7Out, ..., R0Out}
+	assign busMuxSelect = {DINout, Gout, Rout};	
+	
+	// FSM Next State, depends on current state, run, and resetn
+	always @ (Tstep, wIR)
 	begin
-		//: : : specify initial values
-		IRin <= 0;
-		Done <= 0;
-		DINout <= 0;
-		RYout <= 0;
-		RYin <= 0;
-		RXout <= 0;
-		RXin <= 0;
-		Ain <= 0;
-		Gin <= 0;
-		Gout <= 0;
-		AddSub <= 0;
-		//reg IRin, DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub;
-		case (Tstep_Q)
-		T0: // store DIN in IR in time step 0
-			begin
-			IRin <= 1;
-			end
-		T1: //define signals in time step 1
-			case (I)
-				mv: 
-				begin
-					RYout <= 1;
-					RXin <= 1;
-					Done <= 1;			
+		if(Done || !Resetn)
+			Tstep_next <= T0;
+		else begin
+			case(Tstep)
+				T0: begin
+					Tstep_next <= T1;
 				end
-				mvi:
-				begin
-					Done <= 1;
-					DINout <= 1;
-					RXin <= 1;
+				T1: begin
+					case(opcode)
+						mv:
+							Tstep_next <= T0;
+						mvi:
+							Tstep_next <= T0;
+						add:
+							Tstep_next <= T2;
+						sub:
+							Tstep_next <= T2;
+						default:
+							Tstep_next <= T0;
+					endcase
 				end
-				add:
-				begin
-					RXout <= 1;
-					Ain <= 1;
+				T2: begin
+					Tstep_next <= T3;
 				end
-				sub:
-				begin
-					RXout <= 1;
-					Ain <= 1;
+				T3: begin
+					Tstep_next <= T0;
 				end
-				default:
-				begin
-				IRin <= 0;
-				Done <= 0;
-				DINout <= 0;
-				RYout <= 0;
-				RYin <= 0;
-				RXout <= 0;
-				RXin <= 0;
-				Ain <= 0;
-				Gin <= 0;
-				Gout <= 0;
-				AddSub <= 0;
+				default: begin
+					Tstep_next <= T0;
 				end
 			endcase
-		T2: //define signals in time step 2
-			case (I)
-				add:
-				begin
-					RYout <= 1;
-					Gin <= 1;				
-				end
-				sub:
-				begin
-					RYout <= 1;
-					Gin <= 1;
-					AddSub <= 1;
-				end
-				default:
-				begin
-					IRin <= 0;
-					Done <= 0;
-					DINout <= 0;
-					RYout <= 0;
-					RYin <= 0;
-					RXout <= 0;
-					RXin <= 0;
-					Ain <= 0;
-					Gin <= 0;
-					Gout <= 0;
-					AddSub <= 0;
-				end
-			endcase
-		T3: //define signals in time step 3
-			case (I)
-				add:
-				begin
-					Done <= 1;
-					Gout <= 1;
-					RXin <= 1;
-				end
-				sub:
-				begin
-					Done <= 1;
-					RXin <= 1;
-					Gout <= 1;				
-				end
-				default:
-				begin
-					IRin <= 0;
-					Done <= 0;
-					DINout <= 0;
-					RYout <= 0;
-					RYin <= 0;
-					RXout <= 0;
-					RXin <= 0;
-					Ain <= 0;
-					Gin <= 0;
-					Gout <= 0;
-					AddSub <= 0;
-				end
-			endcase
-		endcase
+		end
 	end
 	
-	// Control FSM flip-flops
-	always @(posedge Clock, negedge Resetn) begin
-		if (!Resetn) begin
-			// Reset all FSM flip-flops
-			/*
-			busDriver = dinout;
-			DINout = 0;
-			RYout = 0;
-			RYin = 0;
-			RXout = 0;
-			RXin = 0;
-			Ain = 0;
-			Gin = 0;
-			Gout = 0;
-			AddSub = 0;
-			Tstep_Q = 2'b00;
-			Tstep_D = 2'b00;
-			*/
+	// FSM Output (Control Signals) based on current state an inputs
+	always @ (posedge Clock, negedge Resetn, posedge Run)
+	begin
+		if(!Resetn) begin
+			Rin <= 8'b0000_0000;
+			Ain <= 1'b0;
+			Gin <= 1'b0;
+			IRin <= 1'b1;
+			AddSub <= 1'b0;
+			DINout <= 1'b1;
+			Gout <= 1'b0;
+			Rout <= 8'b0000_0000;
+			Done <= 1'b0;
 		end
-		else Tstep_Q <= Tstep_D;
-		/*
-		else begin // Check control signals and set appropriate flip-flops
-		//RYin, RXin, Ain, Gin, AddSub;
-			// Set the bus driver
-			if(DINout && !(RXout || RYout || Gout)) begin
-				busDriver = 10'b0000000001;
-			end
-			else if(RXout && !(DINout || RYout || Gout)) begin
-				busDriver = {regX, 1'b0, 1'b0};
-			end
-			else if(RYout && !(RXout || DINout || Gout)) begin
-				busDriver = {regY, 1'b0, 1'b0};
-			end
-			else if(Gout && !(RXout || RYout || DINout)) begin
-				busDriver = 10'b0000000010;
-			end
-			else begin
-				$display("Ambiguous bus driver!! Setting to DINout\n");
-				busDriver = 10'b0000000001;
-			end
-			
-			// Ain and Gin are handled by the regn module
-			Rin = 8'b00000000;
-			if(RXin) begin
-				Rin = Rin | regX;
-			end
-			
-			if(RYin) begin
-				Rin = Rin | regY;
-			end
+		else if(Run) begin
+			case(Tstep)
+				T0: begin
+					Rin <= 8'b0000_0000;
+					Ain <= 1'b0;
+					Gin <= 1'b0;
+					IRin <= 1'b1;
+					AddSub <= 1'b0;
+					DINout <= 1'b1;
+					Gout <= 1'b0;
+					Rout <= 8'b0000_0000;
+					Done <= 1'b0;
+				end
+				T1: begin
+					case(opcode)
+						mv: begin
+							Rin <= Rx;
+							Ain <= 1'b0;
+							Gin <= 1'b0;
+							IRin <= 1'b0;
+							AddSub <= 1'b0;
+							DINout <= 1'b0;
+							Gout <= 1'b0;
+							Rout <= Ry;
+							Done <= 1'b1;
+						end
+						mvi: begin
+							Rin <= Rx;
+							Ain <= 1'b0;
+							Gin <= 1'b0;
+							IRin <= 1'b0;
+							AddSub <= 1'b0;
+							DINout <= 1'b1;
+							Gout <= 1'b0;
+							Rout <= 8'b0000_0000;
+							Done <= 1'b1;
+						end
+						add: begin
+							Rin <= 8'b0000_0000;
+							Ain <= 1'b1;
+							Gin <= 1'b0;
+							IRin <= 1'b0;
+							AddSub <= 1'b0;
+							DINout <= 1'b0;
+							Gout <= 1'b0;
+							Rout <= Rx;
+							Done <= 1'b0;
+						end
+						sub: begin
+							Rin <= 8'b0000_0000;
+							Ain <= 1'b1;
+							Gin <= 1'b0;
+							IRin <= 1'b0;
+							AddSub <= 1'b0;
+							DINout <= 1'b0;
+							Gout <= 1'b0;
+							Rout <= Rx;
+							Done <= 1'b0;
+						end
+						default: begin
+							Rin <= 8'b0000_0000;
+							Ain <= 1'b0;
+							Gin <= 1'b0;
+							IRin <= 1'b1;
+							AddSub <= 1'b0;
+							DINout <= 1'b1;
+							Gout <= 1'b0;
+							Rout <= 8'b0000_0000;
+							Done <= 1'b0;
+						end
+					endcase
+				end
+				T2: begin
+					case(opcode)
+						mv: begin
+							$display("Error in FSM. mv should not get to T2\n");
+							Rin <= Rx;
+							Ain <= 1'b0;
+							Gin <= 1'b0;
+							IRin <= 1'b0;
+							AddSub <= 1'b0;
+							DINout <= 1'b0;
+							Gout <= 1'b0;
+							Rout <= Ry;
+							Done <= 1'b1;
+						end
+						mvi: begin
+							$display("Error in FSM. mv should not get to T2\n");
+							Rin <= Rx;
+							Ain <= 1'b0;
+							Gin <= 1'b0;
+							IRin <= 1'b0;
+							AddSub <= 1'b0;
+							DINout <= 1'b1;
+							Gout <= 1'b0;
+							Rout <= 8'b0000_0000;
+							Done <= 1'b1;
+						end
+						add: begin
+							Rin <= 8'b0000_0000;
+							Ain <= 1'b0;
+							Gin <= 1'b1;
+							IRin <= 1'b0;
+							AddSub <= 1'b0;
+							DINout <= 1'b0;
+							Gout <= 1'b0;
+							Rout <= Ry;
+							Done <= 1'b0;
+						end
+						sub: begin
+							Rin <= 8'b0000_0000;
+							Ain <= 1'b0;
+							Gin <= 1'b1;
+							IRin <= 1'b0;
+							AddSub <= 1'b1;
+							DINout <= 1'b0;
+							Gout <= 1'b0;
+							Rout <= Ry;
+							Done <= 1'b0;
+						end
+						default: begin
+							Rin <= 8'b0000_0000;
+							Ain <= 1'b0;
+							Gin <= 1'b0;
+							IRin <= 1'b1;
+							AddSub <= 1'b0;
+							DINout <= 1'b1;
+							Gout <= 1'b0;
+							Rout <= 8'b0000_0000;
+							Done <= 1'b0;
+						end
+					endcase
+				end
+				T3: begin
+					case(opcode)
+						mv: begin
+							$display("Error in FSM. mv should not get to T2\n");
+							Rin <= Rx;
+							Ain <= 1'b0;
+							Gin <= 1'b0;
+							IRin <= 1'b0;
+							AddSub <= 1'b0;
+							DINout <= 1'b0;
+							Gout <= 1'b0;
+							Rout <= Ry;
+							Done <= 1'b1;
+						end
+						mvi: begin
+							$display("Error in FSM. mv should not get to T2\n");
+							Rin <= Rx;
+							Ain <= 1'b0;
+							Gin <= 1'b0;
+							IRin <= 1'b0;
+							AddSub <= 1'b0;
+							DINout <= 1'b1;
+							Gout <= 1'b0;
+							Rout <= 8'b0000_0000;
+							Done <= 1'b1;
+						end
+						add: begin
+							Rin <= Rx;
+							Ain <= 1'b0;
+							Gin <= 1'b0;
+							IRin <= 1'b0;
+							AddSub <= 1'b0;
+							DINout <= 1'b0;
+							Gout <= 1'b1;
+							Rout <= 8'b0000_0000;
+							Done <= 1'b1;
+						end
+						sub: begin
+							Rin <= Rx;
+							Ain <= 1'b0;
+							Gin <= 1'b0;
+							IRin <= 1'b0;
+							AddSub <= 1'b0;
+							DINout <= 1'b0;
+							Gout <= 1'b1;
+							Rout <= 8'b0000_0000;
+							Done <= 1'b1;
+						end
+						default: begin
+							Rin <= 8'b0000_0000;
+							Ain <= 1'b0;
+							Gin <= 1'b0;
+							IRin <= 1'b1;
+							AddSub <= 1'b0;
+							DINout <= 1'b1;
+							Gout <= 1'b0;
+							Rout <= 8'b0000_0000;
+							Done <= 1'b0;
+						end
+					endcase
+				end
+				default: begin
+					$display("Unknown State. That does not bode well for you\n");
+				end
+			endcase
+		end else begin
+			// Keep all control signals the same if not running
 		end
-		*/
+		Tstep <= Tstep_next;
 	end
-	
-	/** General Purpose Register Instantiations **/
-	
-	// Register outputs
-	wire [8:0] R0, R1, R2, R3, R4, R5, R6, R7;
-	
-	// General Purpose Registers
-	regn reg_0(BusWires, Rin[0], Clock, R0);
-
-	regn reg_1(BusWires, Rin[1], Clock, R1);				
-	
-	regn reg_2(BusWires, Rin[2], Clock, R2);
-				
-	regn reg_3(BusWires, Rin[3], Clock, R3);
-	
-	regn reg_4(BusWires, Rin[4], Clock, R4);
-	
-	regn reg_5(BusWires, Rin[5], Clock, R5);
-	
-	regn reg_6(BusWires, Rin[6], Clock, R6);
-	
-	regn reg_7(BusWires, Rin[7], Clock, R7);
-	
-	/** Register A **/
-	regn reg_a(BusWires, Ain, Clock, AoutWires);
-	
-	/** Register G **/
-
-	regn reg_g(GinWires, Gin, Clock, GoutWires);
 	
 	/** Instruction Register **/
-	regn reg_ir(DIN, IRin, Clock, IRoutWires);
+	wire [8:0] wIR;
+	regn regIR(DIN, IRin, Clock, wIR);
 	
-	addsub Addsub(AddSub, AoutWires, BusWires, GinWires);
+	/** General Purpose Registers **/
+	wire [7:0] wR[0:8];
+	regn reg0(BusWires, Rin[0], Clock, wR[0]);
+	regn reg1(BusWires, Rin[1], Clock, wR[1]);
+	regn reg2(BusWires, Rin[2], Clock, wR[2]);
+	regn reg3(BusWires, Rin[3], Clock, wR[3]);
+	regn reg4(BusWires, Rin[4], Clock, wR[4]);
+	regn reg5(BusWires, Rin[5], Clock, wR[5]);
+	regn reg6(BusWires, Rin[6], Clock, wR[6]);
+	regn reg7(BusWires, Rin[7], Clock, wR[7]);
 	
+	/** A Register **/
+	wire [8:0] wA;
+	regn regA(BusWires, Ain, Clock, wA);
+	
+	/** Add Subtract unit **/
+	wire wAddSub;
+	addsub alu(AddSub, wA, BusWires, wAddSub);
+	
+	/** G Register **/
+	wire wG;
+	regn regG(wAddSub, Gin, Clock, wG);
+	
+	/** Set of multiplexers used to control bus access **/
+	parameter r0Out = 10'b0000000001,
+				 r1Out = 10'b0000000010,
+				 r2Out = 10'b0000000100,
+				 r3Out = 10'b0000001000,
+				 r4Out = 10'b0000010000,
+				 r5Out = 10'b0000100000,
+				 r6Out = 10'b0001000000,
+				 r7Out = 10'b0010000000,
+				 rgOut = 10'b0100000000,
+				 dOut  = 10'b1000000000;
+	assign BusWires = (busMuxSelect == r0Out) ? wR[0] :(
+							(busMuxSelect == r1Out) ? wR[1] :(
+							(busMuxSelect == r2Out) ? wR[2] :(
+							(busMuxSelect == r3Out) ? wR[3] :(
+							(busMuxSelect == r4Out) ? wR[4] :(
+							(busMuxSelect == r5Out) ? wR[5] :(
+							(busMuxSelect == r6Out) ? wR[6] :(
+							(busMuxSelect == r7Out) ? wR[7] :(
+							(busMuxSelect == rgOut) ? wG :(
+							(busMuxSelect == dOut ) ? DIN :
+							DIN)))))))));
 
-	always @ (RXout, RYout, Gout, DINout, regX, regY)
-	begin // Check control signals and set appropriate flip-flops
-		//RYin, RXin, Ain, Gin, AddSub;
-			// Set the bus driver
-			if(DINout && !(RXout || RYout || Gout)) begin
-				busDriver = 10'b0000000001;
-			end
-			else if(RXout && !(DINout || RYout || Gout)) begin
-				busDriver = {regX, 1'b0, 1'b0};
-			end
-			else if(RYout && !(RXout || DINout || Gout)) begin
-				busDriver = {regY, 1'b0, 1'b0};
-			end
-			else if(Gout && !(RXout || RYout || DINout)) begin
-				busDriver = 10'b0000000010;
-			end
-			else begin
-				$display("Ambiguous bus driver!! Setting to DINout\n");
-				busDriver = 10'b0000000001;
-			end
-			/*
-			// Ain and Gin are handled by the regn module
-			Rin = 8'b00000000;
-			if(RXin) begin
-				Rin = Rin | regX;
-			end
-			
-			if(RYin) begin
-				Rin = Rin | regY;
-			end
-			*/
-	end
-	
-	always @ (RXin, RYin, regX, regY)
-	begin
-		Rin = 8'b00000000;
-		if(RXin) begin
-			Rin = Rin | regX;
-		end
-		
-		if(RYin) begin
-			Rin = Rin | regY;
-		end
-	end
-	
-	// Define the bus
-	always @ (busDriver, R0, R1, R2, R3, R4, R5, R6, R7, GoutWires, DIN) begin
-		case(busDriver)
-			reg0: BusWires <= R0;
-			reg1: BusWires <= R1;
-			reg2: BusWires <= R2;
-			reg3: BusWires <= R3;
-			reg4: BusWires <= R4;
-			reg5: BusWires <= R5;
-			reg6: BusWires <= R6;
-			reg7: BusWires <= R7;
-			gout: BusWires <= GoutWires;
-			dinout: BusWires <= DIN;
-			default:
-			begin
-				$display("Undefined bus driver!! Defaulting to DIN!!\n");
-				BusWires <= DIN;
-			end
-		endcase
-	end
-	
-
-	
-	
 endmodule
