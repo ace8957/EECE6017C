@@ -70,7 +70,7 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 		if(Done) begin
 			Tstep_D = 0;
 		end
-		else if(Run) begin
+		else begin
         case (Tstep_Q)
             T0: // data is loaded into IR in this time step
                 Tstep_D <= T1;
