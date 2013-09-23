@@ -67,25 +67,27 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 	// Control FSM state table change
     always @(Tstep_Q, Run, Done)
     begin
+		if(Done) begin
+			Tstep_D = 0;
+		end
+		else if(Run) begin
         case (Tstep_Q)
             T0: // data is loaded into IR in this time step
-                if (!Run) Tstep_D <= T0;
-                else Tstep_D <= T1;
+                Tstep_D <= T1;
             T1:
 				begin
-					if(!Done || Run) Tstep_D <= T2;
-					else Tstep_D <= T0;
+					Tstep_D <= T2;
 				end
 				T2:
 				begin
-					if(!Run) Tstep_D <= T0;
-					else Tstep_D <= T3;
+					Tstep_D <= T3;
 				end
 				T3:
 				begin
 					Tstep_D <= T0;
 				end
         endcase
+	  end
     end
 
 	// Control FSM outputs
