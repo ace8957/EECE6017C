@@ -33,7 +33,7 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 
 
 	parameter T0 = 2'b00, T1 = 2'b01, T2 = 2'b10, T3 = 2'b11;
-	parameter mv = 2'b00, mvi = 2'b01, add = 2'b10, sub = 2'b11;
+	parameter mv = 3'b000, mvi = 3'b001, add = 3'b010, sub = 3'b011;
 	parameter reg0 = 10'b1000000000,
 				 reg1 = 10'b0100000000,
 				 reg2 = 10'b0010000000,
