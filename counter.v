@@ -1,6 +1,6 @@
 module counter(clock, reset, n);
 	input clock, reset;
-	output reg [5:0] n;
+	output reg [4:0] n;
 	
 	always @(posedge clock or negedge reset)
 	begin

@@ -4,7 +4,8 @@ module mem(mclock, pclock, resetn, run, done, bus);
 	output done;
 	output [8:0] bus;
 	
-	wire [5:0] n;
+	
+	wire [4:0] n;
 	wire [8:0] data;
 	
 	counter count(mclock, resetn, n);
