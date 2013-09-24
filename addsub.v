@@ -2,7 +2,7 @@
  * Embedded Systems (EECE6017C) - Lab 3
  * Simple Processor
  * Author(s): Alex Stephens <stephea5@mail.uc.edu> (AWS)
- *	      	  Josh Boroff <boroffjb@mail.uc.edu> (JBB)
+ *	      	  Josh Boroff <boroffja@mail.uc.edu> (JBB)
  *	      	  Adam Wilford <wilforaf@mail.uc.edu> (AFW)
  * Target FPGA: Altera Cyclone II 2C20 (EP2C20F484C7)
  * Tool: Quartus II 64-bit

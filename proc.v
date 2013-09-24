@@ -2,7 +2,7 @@
  * Embedded Systems (EECE6017C) - Lab 3
  * Simple Processor
  * Author(s): Alex Stephens <stephea5@mail.uc.edu> (AWS)
- *	      	  Josh Boroff <boroffjb@mail.uc.edu> (JBB)
+ *	      	  Josh Boroff <boroffja@mail.uc.edu> (JBB)
  *	      	  Adam Wilford <wilforaf@mail.uc.edu> (AFW)
  * Target FPGA: Altera Cyclone II 2C20 (EP2C20F484C7)
  * Tool: Quartus II 64-bit
@@ -235,38 +235,7 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 			*/
 		end
 		else Tstep_Q <= Tstep_D;
-		/*
-		else begin // Check control signals and set appropriate flip-flops
-		//RYin, RXin, Ain, Gin, AddSub;
-			// Set the bus driver
-			if(DINout && !(RXout || RYout || Gout)) begin
-				busDriver = 10'b0000000001;
-			end
-			else if(RXout && !(DINout || RYout || Gout)) begin
-				busDriver = {regX, 1'b0, 1'b0};
-			end
-			else if(RYout && !(RXout || DINout || Gout)) begin
-				busDriver = {regY, 1'b0, 1'b0};
-			end
-			else if(Gout && !(RXout || RYout || DINout)) begin
-				busDriver = 10'b0000000010;
-			end
-			else begin
-				$display("Ambiguous bus driver!! Setting to DINout\n");
-				busDriver = 10'b0000000001;
-			end
-			
-			// Ain and Gin are handled by the regn module
-			Rin = 8'b00000000;
-			if(RXin) begin
-				Rin = Rin | regX;
-			end
-			
-			if(RYin) begin
-				Rin = Rin | regY;
-			end
-		end
-		*/
+		
 	end
 	
 	/** General Purpose Register Instantiations **/
@@ -324,17 +293,7 @@ module proc (DIN, Resetn, Clock, Run, Done, BusWires);
 				$display("Ambiguous bus driver!! Setting to DINout\n");
 				busDriver = 10'b0000000001;
 			end
-			/*
-			// Ain and Gin are handled by the regn module
-			Rin = 8'b00000000;
-			if(RXin) begin
-				Rin = Rin | regX;
-			end
 			
-			if(RYin) begin
-				Rin = Rin | regY;
-			end
-			*/
 	end
 	
 	always @ (RXin, RYin, regX, regY)
