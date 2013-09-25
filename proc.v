@@ -34,7 +34,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 	output reg [8:0] DOUT, ADDR;
 
 
-	parameter T0 = 2'b00, T1 = 2'b01, T2 = 2'b10, T3 = 2'b11;
+	parameter T0 = 3'b000, T1 = 3'b001, T2 = 3'b010, T3 = 3'b011, T4 = 3'b100;
 	parameter mv = 3'b000, mvi = 3'b001, add = 3'b010, sub = 3'b011, ld = 3'b100, st = 3'b101, mvnz = 3'b110;
 	parameter reg0 = 10'b1000000000,
 				 reg1 = 10'b0100000000,
@@ -92,7 +92,11 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 				end
 				T3:
 				begin
-					Tstep_D <= T0;
+					Tstep_D <= T4;
+				end
+				T4:
+				begin
+					Tstep_D <=T0;
 				end
         endcase
 	  end
