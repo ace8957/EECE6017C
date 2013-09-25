@@ -1,5 +1,5 @@
 /**
- * Embedded Systems (EECE6017C) - Lab 3
+ * Embedded Systems (EECE6017C) - Lab 4
  * Simple Processor
  * Author(s): Alex Stephens <stephea5@mail.uc.edu> (AWS)
  *	      	  Josh Boroff <boroffja@mail.uc.edu> (JBB)
@@ -12,25 +12,26 @@
  * Date		Developer	Description
  * 09 18 13 				Initial development
  * 09 19 13	AWS			Added GPRs and associated control signals. Defined bus drivers.
+ * 09 25 13					Began development on enhanced version on new branch
  */
 
 /**
  * Module proc
- * Simple processor which can perform add, subtract, move, and move immediate
- * instructions. All values are expected to be Little Endian.
- * DIN (9-bit, Little Endian) [in] - Instructions and immediate data are read in through this port
+ * Enhanced processor with a 9-bit synchronous memory interface and program counter
+ * DIN (9-bit, Little Endian) [in] - Data input, values from memory are read in through this port.
  * Resetn (1-bit) [in] - Active low reset
  * Clock (1-bit) [in] - Enable for internal registers
  * Run (1-bit) [in] - While hight, this signal will allow the processor to continue execution
  * Done (1-bit) [out] - This signal goes high when an instruction has completed
- * BusWires (9-bit, Little Endian) [out] - Holds that value of what is currently being sent around
+ * DOUT (9-bit, Little Endian) [out] - Data being sent to memory
+ * ADDR (9-bit, Little Endian) [out] - Address to access from memory
+ * W (1-bit) [out] - Memory write enable
  */
 module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 	input [8:0] DIN;
 	input Resetn, Clock, Run;
 	output reg Done, W;
 	output reg [8:0] DOUT, ADDR;
-	//output reg [8:0] BusWires;
 
 
 	parameter T0 = 2'b00, T1 = 2'b01, T2 = 2'b10, T3 = 2'b11;
@@ -47,7 +48,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 				 dinout = 10'b0000000001;
 	
 	//declare variables
-	reg [1:0] Tstep_Q /* synthesis preserve */;
+	reg [1:0] Tstep_Q;
 	reg [1:0] Tstep_D;
 	wire [2:0] I;
 	wire [0:7] regX, regY; ///<-- These are 1-hot encoding, Big Endian!!
@@ -59,7 +60,8 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 	reg [0:9] busDriver; ///< [R0out, ..., R7out, Gout, DINout]
 	
 	// Control Signals
-	reg IRin, DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub;
+	reg IRin, DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub,
+		 ;
  
 	assign I = IRoutWires[8:6];
 	dec3to8 decX (IRoutWires[5:3], 1'b1, regX);
@@ -180,7 +182,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 				AddSub <= 0;
 				end
 			endcase
-		T3: //define signals in time step 2
+		T3: //define signals in time step 3
 			case (I)
 				mvi:
 				begin	
