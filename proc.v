@@ -35,7 +35,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 
 
 	parameter T0 = 2'b00, T1 = 2'b01, T2 = 2'b10, T3 = 2'b11;
-	parameter mv = 3'b000, mvi = 3'b001, add = 3'b010, sub = 3'b011;
+	parameter mv = 3'b000, mvi = 3'b001, add = 3'b010, sub = 3'b011, ld = 3'b100, st = 3'b101, mvnz = 3'b110;
 	parameter reg0 = 10'b1000000000,
 				 reg1 = 10'b0100000000,
 				 reg2 = 10'b0010000000,
@@ -128,9 +128,15 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 		case (Tstep_Q)
 		T0: // store DIN in IR in time step 0
 			begin
-			IRin <= 1;
+			//IRin <= 1;
+				PCout <= 1;
+				ADDRin <= 1;
 			end
-		T1: //define signals in time step 1
+		T1:
+			begin
+				IRin <=1;
+				PCincr <=1;
+		T2: //define signals in time step 1
 			case (I)
 				mv: 
 				begin
@@ -140,9 +146,8 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 				end
 				mvi:
 				begin
-					Done <= 1;
-					DINout <= 1;
-					RXin <= 1;
+					PCout <=1;
+					ADDRin <=1;
 				end
 				add:
 				begin
@@ -153,6 +158,25 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 				begin
 					RXout <= 1;
 					Ain <= 1;
+				end
+				ld:
+				begin
+					RYout <=1;
+					ADDRin <=1;
+				end
+				st:
+				begin
+					RYout <=1;
+					ADDRin <=1;
+				end
+				mvnz:
+				begin
+					if(GNZ)
+					begin
+						RYout <=1;
+						ADDRin <=1;
+					end
+					else Done <= 1;
 				end
 				default:
 				begin
@@ -169,8 +193,14 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 				AddSub <= 0;
 				end
 			endcase
-		T2: //define signals in time step 2
+		T3: //define signals in time step 3
 			case (I)
+				mvi:
+				begin	
+					PCincr <=1;
+					DINout <=1;
+					RXin <=1;
+					Done <=1;
 				add:
 				begin
 					RYout <= 1;
@@ -182,6 +212,18 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 					Gin <= 1;
 					AddSub <= 1;
 				end
+				ld:
+				begin
+					DINout <=1;
+					RXin <=1;
+					Done <=1;
+				end
+				st:
+				begin	
+					RXout <=1;
+					DOUTin <=1;
+					W_D <=1;
+					Done <=1;//This may need to be in another step unsure
 				default:
 				begin
 					IRin <= 0;
@@ -197,7 +239,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 					AddSub <= 0;
 				end
 			endcase
-		T3: //define signals in time step 3
+		T4: //define signals in time step 3
 			case (I)
 				add:
 				begin
