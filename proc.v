@@ -55,13 +55,24 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 	wire [8:0] IRoutWires;
 	wire [8:0] GinWires, GoutWires;
 	wire [8:0] AoutWires;
+	wire GNZ;
+	and(GNZ, GoutWires[0],
+				GoutWires[1],
+				GoutWires[2],
+				GoutWires[3],
+				GoutWires[4],
+				GoutWires[5],
+				GoutWires[6],
+				GoutWires[7],
+				GoutWires[8]
+	);
 	// Register input signals
 	reg [0:7] Rin;
 	reg [0:9] busDriver; ///< [R0out, ..., R7out, Gout, DINout]
 	
 	// Control Signals
 	reg IRin, DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub,
-		 ;
+		 PCincr, ADDRin, DOUTin;
  
 	assign I = IRoutWires[8:6];
 	dec3to8 decX (IRoutWires[5:3], 1'b1, regX);
@@ -261,7 +272,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 	
 	regn reg_6(BusWires, Rin[6], Clock, R6);
 	
-	regn reg_7(BusWires, Rin[7], Clock, R7);
+	counter reg_pc(Clock, Resetn, PCincr, Rin[7], R7);
 	
 	/** Register A **/
 	regn reg_a(BusWires, Ain, Clock, AoutWires);
