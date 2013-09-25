@@ -12,22 +12,38 @@
 
 /**
  * Module counter - This module is used to increment a count of 5 bits
- * Clock - input to say when to increment
+ * clock - synchronizes this counter with another system
  * reset - input for when the counter should be reset to 0
+ * countEn - Enable counting
+ * load - Put the loadVal into the counter
+ * loadVal - Value to start the counter at
  * n - The output value of the counter
  */
 
-module counter(clock, reset, n);
-	input clock, reset;
-	output reg [4:0] n;
+module counter(clock, reset, countEn, load, loadVal, n);
+	input clock, enable, load, reset;
+	input [8:0] loadVal;
+	output reg [8:0] n;
 	
-	initial n = 5'b00000;
+	initial n = 9'b000000000;
 	
-	always @(posedge clock or negedge reset) 
+	always @(posedge clock or negedge reset or posedge load or posedge countEn) 
 	begin
-		if(!reset) n = 5'b00000;//reset to 0
-		else begin
-			n = n + 1;//increment
+		if(!reset) n = 9'b000000000;//reset to 0
+		else if(clock) begin
+			if(!load && countEn) begin
+				n = n + 1;//increment
+			end
+			else if(load && !countEn) begin
+				n = loadVal;
+			end	
+			else if(load && countEn) begin
+				$display("Load and countEn both high! They should not both be high at the same time! Loading loadVal+1\n");
+				n = loadVal + 1;
+			end
+			else begin
+				// do nothing
+			end
 		end
 	end
 endmodule
