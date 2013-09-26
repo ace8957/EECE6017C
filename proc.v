@@ -48,8 +48,9 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 				 dinout = 10'b0000000001;
 	
 	//declare variables
-	reg [1:0] Tstep_Q;
-	reg [1:0] Tstep_D;
+	reg [2:0] Tstep_Q;
+	reg [2:0] Tstep_D;
+	reg [8:0] BusWires;
 	wire [2:0] I;
 	wire [0:7] regX, regY; ///<-- These are 1-hot encoding, Big Endian!!
 	wire [8:0] IRoutWires;
@@ -72,7 +73,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 	
 	// Control Signals
 	reg IRin, DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub,
-		 PCincr, ADDRin, DOUTin;
+		 PCincr, PCout, ADDRin, DOUTin, W_D;
  
 	assign I = IRoutWires[8:6];
 	dec3to8 decX (IRoutWires[5:3], 1'b1, regX);
@@ -140,7 +141,9 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 			begin
 				IRin <=1;
 				PCincr <=1;
+			end
 		T2: //define signals in time step 1
+			begin
 			case (I)
 				mv: 
 				begin
@@ -197,7 +200,9 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 				AddSub <= 0;
 				end
 			endcase
+			end
 		T3: //define signals in time step 3
+			begin
 			case (I)
 				mvi:
 				begin	
@@ -205,6 +210,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 					DINout <=1;
 					RXin <=1;
 					Done <=1;
+				end
 				add:
 				begin
 					RYout <= 1;
@@ -228,6 +234,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 					DOUTin <=1;
 					W_D <=1;
 					Done <=1;//This may need to be in another step unsure
+				end
 				default:
 				begin
 					IRin <= 0;
@@ -243,7 +250,9 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 					AddSub <= 0;
 				end
 			endcase
+			end
 		T4: //define signals in time step 3
+			begin
 			case (I)
 				add:
 				begin
@@ -272,6 +281,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 					AddSub <= 0;
 				end
 			endcase
+			end
 		endcase
 	end
 	
@@ -295,7 +305,6 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 			*/
 		end
 		else Tstep_Q <= Tstep_D;
-		
 	end
 	
 	/** General Purpose Register Instantiations **/
