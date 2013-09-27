@@ -31,7 +31,9 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 	input [8:0] DIN;
 	input Resetn, Clock, Run;
 	output reg Done, W;
-	output reg [8:0] DOUT, ADDR;
+	output [8:0] DOUT;
+	output [8:0] ADDR;
+	//TODO: implement DOUT, W, and ADDR drivers
 
 
 	parameter T0 = 3'b000, T1 = 3'b001, T2 = 3'b010, T3 = 3'b011, T4 = 3'b100;
@@ -43,7 +45,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 				 reg4 = 10'b0000100000,
 				 reg5 = 10'b0000010000,
 				 reg6 = 10'b0000001000,
-				 reg7 = 10'b0000000100,
+				 pcout = 10'b0000000100,
 				 gout = 10'b0000000010,
 				 dinout = 10'b0000000001;
 	
@@ -129,6 +131,11 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 		Gin <= 0;
 		Gout <= 0;
 		AddSub <= 0;
+		PCout <= 0;
+		ADDRin <= 0;
+		DOUTin <= 0;
+		W_D <= 0;
+		PCincr <= 0;
 		//reg IRin, DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub;
 		case (Tstep_Q)
 		T0: // store DIN in IR in time step 0
@@ -288,7 +295,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 	// Control FSM flip-flops
 	always @(posedge Clock, negedge Resetn) begin
 		if (!Resetn) begin
-			// Reset all FSM flip-flops
+			// Reset all FSM flip-flops and the pc
 			/*
 			busDriver = dinout;
 			DINout = 0;
@@ -305,12 +312,13 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 			*/
 		end
 		else Tstep_Q <= Tstep_D;
+		W <= W_D;
 	end
 	
 	/** General Purpose Register Instantiations **/
 	
 	// Register outputs
-	wire [8:0] R0, R1, R2, R3, R4, R5, R6, R7;
+	wire [8:0] R0, R1, R2, R3, R4, R5, R6, PC;
 	
 	// General Purpose Registers
 	regn reg_0(BusWires, Rin[0], Clock, R0);
@@ -327,7 +335,11 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 	
 	regn reg_6(BusWires, Rin[6], Clock, R6);
 	
-	counter reg_pc(Clock, Resetn, PCincr, Rin[7], R7);
+	regn addr_reg(BusWires, ADDRin, Clock, ADDR);
+	
+	regn dout_reg(BusWires, DOUTin, Clock, DOUT);
+	
+	counter reg_pc(Clock, Resetn, PCincr, Rin[7], BusWires, PC);
 	
 	/** Register A **/
 	regn reg_a(BusWires, Ain, Clock, AoutWires);
@@ -378,7 +390,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 	end
 	
 	// Define the bus
-	always @ (busDriver, R0, R1, R2, R3, R4, R5, R6, R7, GoutWires, DIN) begin
+	always @ (busDriver, R0, R1, R2, R3, R4, R5, R6, PCout, GoutWires, DIN) begin
 		case(busDriver)
 			reg0: BusWires <= R0;
 			reg1: BusWires <= R1;
@@ -387,7 +399,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 			reg4: BusWires <= R4;
 			reg5: BusWires <= R5;
 			reg6: BusWires <= R6;
-			reg7: BusWires <= R7;
+			pcout: BusWires <= PC;
 			gout: BusWires <= GoutWires;
 			dinout: BusWires <= DIN;
 			default:

@@ -30,10 +30,8 @@ module mem(mclock, pclock, resetn, run, done, bus);
 	output [8:0] bus;
 	
 	
-	wire [4:0] n;//data wire between the counter module and the memory module
+	wire [8:0] n;//data wire between the counter module and the memory module
 	wire [8:0] data;//data wire between memory and proc transfer
-	
-	counter count(mclock, resetn, n);//the module for counting
 	
 	memory memory_control(n, mclock, data);// the module for memory
 	
