@@ -31,22 +31,45 @@ module mem(clock, resetn, run);
 	wire [8:0] data_in;//data wire between memory and proc transfer
 	wire [8:0] address;//address connection from proc to memory
 	wire [8:0] led_output_wires;
+	wire [8:0] seg_output_wires;
 	wire a7, a8;
 	wire W;
-	reg led_write;
-	reg mem_write;
+	/*
+	reg led_write;//led writing
+	reg mem_write;//memory writing
+	reg seg_write;//7seg writing
+	*/
+	wire led_write;
+	wire mem_write;
+	wire seg_write;
+	
+	wire [3:0] segSelect;//the first 3 bits of the address will be the selector for which display
+	
 	assign a7 = address[7];
 	assign a8 = address[8];
-	
+	/* Write Signals:
+	 * 00 = memory write
+	 * 01 = led write
+	 * 10 = 7 segment write
+	 */
+	assign seg_write = (W & ~(a7 | ~a8));
+	assign led_write = (W & ~(~a7 | a8));
+	assign mem_write = (W & ~(a7 | a8));
+	/*
 	always begin
 		led_write = (W & ~(~a7 | a8));
 		mem_write = (W & ~(a7 | a8));
+		seg_write = (W & ~(a7 | ~a8));
 	end
+	*/
+	assign segSelect = {address[3], address[2], address[1], address[0]};
 	
 	regn led_reg(data_out, led_write, clock, led_output_wires); 
 	
 	enhanced_mem memory_control(address, clock, data_out, mem_write, data_in);// the module for memory
 	
 	proc processor(data_in, resetn, clock, run, data_out, address, W);// the module for the processor
+	
+	seg7_scroll seven_seg_display(segSelect, data_out, seg_write, clock, seg_output_wires);
 	
 endmodule
