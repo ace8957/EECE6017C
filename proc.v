@@ -27,10 +27,10 @@
  * ADDR (9-bit, Little Endian) [out] - Address to access from memory
  * W (1-bit) [out] - Memory write enable
  */
-module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
+module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 	input [8:0] DIN;
 	input Resetn, Clock, Run;
-	output reg Done, W;
+	output reg W;
 	output [8:0] DOUT;
 	output [8:0] ADDR;
 	//TODO: implement DOUT, W, and ADDR drivers
@@ -53,6 +53,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 	reg [2:0] Tstep_Q;
 	reg [2:0] Tstep_D;
 	reg [8:0] BusWires;
+	reg Done;
 	wire [2:0] I;
 	wire [0:7] regX, regY; ///<-- These are 1-hot encoding, Big Endian!!
 	wire [8:0] IRoutWires;
@@ -390,7 +391,7 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 	end
 	
 	// Define the bus
-	always @ (busDriver, R0, R1, R2, R3, R4, R5, R6, PCout, GoutWires, DIN) begin
+	always @ (busDriver, R0, R1, R2, R3, R4, R5, R6, PC, GoutWires, DIN) begin
 		case(busDriver)
 			reg0: BusWires <= R0;
 			reg1: BusWires <= R1;
@@ -409,8 +410,4 @@ module proc (DIN, Resetn, Clock, Run, Done, DOUT, ADDR, W);
 			end
 		endcase
 	end
-	
-
-	
-	
 endmodule

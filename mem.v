@@ -23,18 +23,30 @@
  * done - the signal released when an operation has completed
  * bus - the output of the bus lines 
  */
-module mem(mclock, pclock, resetn, run, done, bus);
+module mem(clock, resetn, run);
 	
-	input mclock, pclock, resetn, run;
-	output done;
-	output [8:0] bus;
+	input clock, resetn, run;
 	
+	wire [8:0] data_out;//data wire between memory and proc transfer
+	wire [8:0] data_in;//data wire between memory and proc transfer
+	wire [8:0] address;//address connection from proc to memory
+	wire [8:0] led_output_wires;
+	wire a7, a8;
+	wire W;
+	reg led_write;
+	reg mem_write;
+	assign a7 = address[7];
+	assign a8 = address[8];
 	
-	wire [8:0] n;//data wire between the counter module and the memory module
-	wire [8:0] data;//data wire between memory and proc transfer
+	always begin
+		led_write = (W & ~(~a7 | a8));
+		mem_write = (W & ~(a7 | a8));
+	end
 	
-	memory memory_control(n, mclock, data);// the module for memory
+	regn led_reg(data_out, led_write, clock, led_output_wires); 
 	
-	proc processor(data, resetn, pclock, run, done, bus);// the module for the processor
+	enhanced_mem memory_control(address, clock, data_out, mem_write, data_in);// the module for memory
+	
+	proc processor(data_in, resetn, clock, run, data_out, address, W);// the module for the processor
 	
 endmodule
