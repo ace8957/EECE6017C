@@ -27,7 +27,7 @@ module counter(clock, reset, countEn, load, loadVal, n);
 	
 	initial n = 9'b000000000;
 	
-	always @(posedge clock or negedge reset or posedge load or posedge countEn) 
+	always @(posedge clock or negedge reset) 
 	begin
 		if(!reset) n = 9'b000000000;//reset to 0
 		else if(clock) begin
