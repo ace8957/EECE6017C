@@ -24,14 +24,14 @@
  * bus - the output of the bus lines 
  */
 module mem(clock, resetn, run, address, led_output_wires, seg0_out,
-			seg1_out, seg2_out, seg3_out, data_in);
+			seg1_out, seg2_out, seg3_out, data_in, data_out);
 	
 	input clock, resetn, run;
 	output [8:0] address;//address connection from memory to proc
 	output [8:0] led_output_wires;
 	output [8:0] seg0_out, seg1_out, seg2_out, seg3_out;
 	
-	wire [8:0] data_out;//data wire between memory and proc transfer
+	/*wire */ output [8:0] data_out;//data wire between memory and proc transfer
 	/*wire */ output [8:0] data_in;//data wire between memory and proc transfer
 	wire a7, a8;
 	wire W;
