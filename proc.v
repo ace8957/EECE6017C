@@ -118,7 +118,7 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
     end
 
 	// Control FSM outputs
-	always @(Tstep_Q or I or regX or regY)
+	always @(Tstep_Q or I or regX or regY or GNZ)
 	begin
 		//: : : specify initial values
 		IRin <= 0;
@@ -312,8 +312,10 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 			Tstep_D = 2'b00;
 			*/
 		end
-		else Tstep_Q <= Tstep_D;
-		W <= W_D;
+		else begin
+			Tstep_Q <= Tstep_D;
+			W <= W_D;
+		end
 	end
 	
 	/** General Purpose Register Instantiations **/
@@ -355,7 +357,7 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 	addsub Addsub(AddSub, AoutWires, BusWires, GinWires);
 	
 
-	always @ (RXout, RYout, Gout, DINout, regX, regY)
+	always @ (RXout, RYout, Gout, DINout, PCout, regX, regY)
 	begin // Check control signals and set appropriate flip-flops
 		//RYin, RXin, Ain, Gin, AddSub;
 			// Set the bus driver
@@ -369,11 +371,14 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				busDriver = {regY, 1'b0, 1'b0};
 			end
 			else if(Gout && !(RXout || RYout || DINout)) begin
-				busDriver = 10'b0000000010;
+				busDriver = gout;
+			end
+			else if(PCout && !(RXout || RYout || DINout || Gout)) begin
+				busDriver = pcout;
 			end
 			else begin
 				$display("Ambiguous bus driver!! Setting to DINout\n");
-				busDriver = 10'b0000000001;
+				busDriver = dinout;
 			end
 			
 	end
