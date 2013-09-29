@@ -50,7 +50,7 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				 dinout = 10'b0000000001;
 	
 	//declare variables
-	reg [2:0] Tstep_Q;
+	reg [2:0] Tstep_Q/*synthesis preserve*/;
 	reg [2:0] Tstep_D;
 	reg [8:0] BusWires;
 	reg Done;
