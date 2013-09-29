@@ -230,19 +230,6 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 					Gin <= 1;
 					AddSub <= 1;
 				end
-				ld:
-				begin
-					DINout <=1;
-					RXin <=1;
-					Done <=1;
-				end
-				st:
-				begin	
-					RXout <=1;
-					DOUTin <=1;
-					W_D <=1;
-					Done <=1;//This may need to be in another step unsure
-				end
 				default:
 				begin
 					IRin <= 0;
@@ -273,6 +260,19 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 					Done <= 1;
 					RXin <= 1;
 					Gout <= 1;				
+				end
+				ld:
+				begin
+					DINout <=1;
+					RXin <=1;
+					Done <=1;
+				end
+				st:
+				begin	
+					RXout <=1;
+					DOUTin <=1;
+					W_D <=1;
+					Done <=1;//This may need to be in another step unsure
 				end
 				default:
 				begin
