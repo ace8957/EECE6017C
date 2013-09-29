@@ -4,7 +4,7 @@
 // MODULE: altsyncram 
 
 // ============================================================
-// File Name: enhanced_mem.v
+// File Name: new_mem.v
 // Megafunction Name(s):
 // 			altsyncram
 //
@@ -36,7 +36,7 @@
 // synopsys translate_off
 `timescale 1 ps / 1 ps
 // synopsys translate_on
-module enhanced_mem (
+module new_mem (
 	address,
 	clock,
 	data,
@@ -86,14 +86,14 @@ module enhanced_mem (
 	defparam
 		altsyncram_component.clock_enable_input_a = "BYPASS",
 		altsyncram_component.clock_enable_output_a = "BYPASS",
-		altsyncram_component.init_file = "../EECE6017C/inst_mem.mif",
+		altsyncram_component.init_file = "inst_mem.mif",
 		altsyncram_component.intended_device_family = "Cyclone II",
 		altsyncram_component.lpm_hint = "ENABLE_RUNTIME_MOD=NO",
 		altsyncram_component.lpm_type = "altsyncram",
 		altsyncram_component.numwords_a = 128,
 		altsyncram_component.operation_mode = "SINGLE_PORT",
 		altsyncram_component.outdata_aclr_a = "NONE",
-		altsyncram_component.outdata_reg_a = "CLOCK0",
+		altsyncram_component.outdata_reg_a = "UNREGISTERED",
 		altsyncram_component.power_up_uninitialized = "FALSE",
 		altsyncram_component.widthad_a = 7,
 		altsyncram_component.width_a = 9,
@@ -124,13 +124,13 @@ endmodule
 // Retrieval info: PRIVATE: JTAG_ENABLED NUMERIC "0"
 // Retrieval info: PRIVATE: JTAG_ID STRING "NONE"
 // Retrieval info: PRIVATE: MAXIMUM_DEPTH NUMERIC "0"
-// Retrieval info: PRIVATE: MIFfilename STRING "../EECE6017C/inst_mem.mif"
+// Retrieval info: PRIVATE: MIFfilename STRING "inst_mem.mif"
 // Retrieval info: PRIVATE: NUMWORDS_A NUMERIC "128"
 // Retrieval info: PRIVATE: RAM_BLOCK_TYPE NUMERIC "0"
 // Retrieval info: PRIVATE: READ_DURING_WRITE_MODE_PORT_A NUMERIC "3"
 // Retrieval info: PRIVATE: RegAddr NUMERIC "1"
 // Retrieval info: PRIVATE: RegData NUMERIC "1"
-// Retrieval info: PRIVATE: RegOutput NUMERIC "1"
+// Retrieval info: PRIVATE: RegOutput NUMERIC "0"
 // Retrieval info: PRIVATE: SYNTH_WRAPPER_GEN_POSTFIX STRING "0"
 // Retrieval info: PRIVATE: SingleClock NUMERIC "1"
 // Retrieval info: PRIVATE: UseDQRAM NUMERIC "1"
@@ -141,14 +141,14 @@ endmodule
 // Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
 // Retrieval info: CONSTANT: CLOCK_ENABLE_INPUT_A STRING "BYPASS"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_OUTPUT_A STRING "BYPASS"
-// Retrieval info: CONSTANT: INIT_FILE STRING "../EECE6017C/inst_mem.mif"
+// Retrieval info: CONSTANT: INIT_FILE STRING "inst_mem.mif"
 // Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone II"
 // Retrieval info: CONSTANT: LPM_HINT STRING "ENABLE_RUNTIME_MOD=NO"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "altsyncram"
 // Retrieval info: CONSTANT: NUMWORDS_A NUMERIC "128"
 // Retrieval info: CONSTANT: OPERATION_MODE STRING "SINGLE_PORT"
 // Retrieval info: CONSTANT: OUTDATA_ACLR_A STRING "NONE"
-// Retrieval info: CONSTANT: OUTDATA_REG_A STRING "CLOCK0"
+// Retrieval info: CONSTANT: OUTDATA_REG_A STRING "UNREGISTERED"
 // Retrieval info: CONSTANT: POWER_UP_UNINITIALIZED STRING "FALSE"
 // Retrieval info: CONSTANT: WIDTHAD_A NUMERIC "7"
 // Retrieval info: CONSTANT: WIDTH_A NUMERIC "9"
@@ -163,10 +163,10 @@ endmodule
 // Retrieval info: CONNECT: @data_a 0 0 9 0 data 0 0 9 0
 // Retrieval info: CONNECT: @wren_a 0 0 0 0 wren 0 0 0 0
 // Retrieval info: CONNECT: q 0 0 9 0 @q_a 0 0 9 0
-// Retrieval info: GEN_FILE: TYPE_NORMAL enhanced_mem.v TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL enhanced_mem.inc FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL enhanced_mem.cmp FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL enhanced_mem.bsf FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL enhanced_mem_inst.v FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL enhanced_mem_bb.v TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL new_mem.v TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL new_mem.inc FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL new_mem.cmp FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL new_mem.bsf FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL new_mem_inst.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL new_mem_bb.v FALSE
 // Retrieval info: LIB_FILE: altera_mf
