@@ -67,7 +67,7 @@ module mem(clock, resetn, run, address, led_output_wires, seg0_out,
 	
 	regn led_reg(data_out, led_write, clock, led_output_wires); 
 	
-	enhanced_mem memory_control(address, clock, data_out, mem_write, data_in);// the module for memory
+	enhanced_mem memory_control(address[6:0], clock, data_out, mem_write, data_in);// the module for memory
 	
 	proc processor(data_in, resetn, clock, run, data_out, address, W);// the module for the processor
 	
