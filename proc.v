@@ -197,8 +197,9 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				begin
 					if(GNZ)
 					begin
-						RYout <=1;
-						ADDRin <=1;
+						RYout <= 1;
+						RXin <= 1;
+						Done <= 1;
 					end
 					else Done <= 1;
 				end
