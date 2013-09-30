@@ -50,7 +50,7 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				 dinout = 10'b0000000001;
 	
 	//declare variables
-	reg [2:0] Tstep_Q;
+	reg [2:0] Tstep_Q /* synthesis preserve */;
 	reg [2:0] Tstep_D;
 	reg [8:0] BusWires;
 	reg Done;
@@ -137,7 +137,6 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 		DOUTin <= 0;
 		W_D <= 0;
 		PCincr <= 0;
-		//reg IRin, DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub;
 		case (Tstep_Q)
 		T0: // store DIN in IR in time step 0
 			begin
