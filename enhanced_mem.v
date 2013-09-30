@@ -4,7 +4,7 @@
 // MODULE: altsyncram 
 
 // ============================================================
-// File Name: new_mem.v
+// File Name: enhanced_mem.v
 // Megafunction Name(s):
 // 			altsyncram
 //
@@ -86,7 +86,7 @@ module enhanced_mem (
 	defparam
 		altsyncram_component.clock_enable_input_a = "BYPASS",
 		altsyncram_component.clock_enable_output_a = "BYPASS",
-		altsyncram_component.init_file = "inst_mem.mif",
+		altsyncram_component.init_file = "../EECE6017C/inst_mem.mif",
 		altsyncram_component.intended_device_family = "Cyclone II",
 		altsyncram_component.lpm_hint = "ENABLE_RUNTIME_MOD=NO",
 		altsyncram_component.lpm_type = "altsyncram",
@@ -124,7 +124,7 @@ endmodule
 // Retrieval info: PRIVATE: JTAG_ENABLED NUMERIC "0"
 // Retrieval info: PRIVATE: JTAG_ID STRING "NONE"
 // Retrieval info: PRIVATE: MAXIMUM_DEPTH NUMERIC "0"
-// Retrieval info: PRIVATE: MIFfilename STRING "inst_mem.mif"
+// Retrieval info: PRIVATE: MIFfilename STRING "../EECE6017C/inst_mem.mif"
 // Retrieval info: PRIVATE: NUMWORDS_A NUMERIC "128"
 // Retrieval info: PRIVATE: RAM_BLOCK_TYPE NUMERIC "0"
 // Retrieval info: PRIVATE: READ_DURING_WRITE_MODE_PORT_A NUMERIC "3"
@@ -141,7 +141,7 @@ endmodule
 // Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
 // Retrieval info: CONSTANT: CLOCK_ENABLE_INPUT_A STRING "BYPASS"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_OUTPUT_A STRING "BYPASS"
-// Retrieval info: CONSTANT: INIT_FILE STRING "inst_mem.mif"
+// Retrieval info: CONSTANT: INIT_FILE STRING "../EECE6017C/inst_mem.mif"
 // Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone II"
 // Retrieval info: CONSTANT: LPM_HINT STRING "ENABLE_RUNTIME_MOD=NO"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "altsyncram"
@@ -163,10 +163,16 @@ endmodule
 // Retrieval info: CONNECT: @data_a 0 0 9 0 data 0 0 9 0
 // Retrieval info: CONNECT: @wren_a 0 0 0 0 wren 0 0 0 0
 // Retrieval info: CONNECT: q 0 0 9 0 @q_a 0 0 9 0
-// Retrieval info: GEN_FILE: TYPE_NORMAL new_mem.v TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL new_mem.v FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL new_mem.inc FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL new_mem.cmp FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL new_mem.bsf FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL new_mem_inst.v FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL new_mem_bb.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL enhanced_mem.v TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL enhanced_mem.inc FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL enhanced_mem.cmp FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL enhanced_mem.bsf FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL enhanced_mem_inst.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL enhanced_mem_bb.v FALSE
 // Retrieval info: LIB_FILE: altera_mf

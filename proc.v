@@ -85,6 +85,8 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 	// Control FSM state table change
     always @(Tstep_Q, Run, Done)
     begin
+	 // Default Tstep_D value:
+	 Tstep_D = T0;
 		if(Done) begin
 			Tstep_D <= T0;
 		end
@@ -113,6 +115,8 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				begin
 					Tstep_D <=T0;
 				end
+				default:
+					Tstep_D <= T0;
         endcase
 	  end
     end
@@ -289,6 +293,25 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 					AddSub <= 0;
 				end
 			endcase
+			end
+		default:
+			begin
+				IRin <= 0;
+				Done <= 0;
+				DINout <= 0;
+				RYout <= 0;
+				RYin <= 0;
+				RXout <= 0;
+				RXin <= 0;
+				Ain <= 0;
+				Gin <= 0;
+				Gout <= 0;
+				AddSub <= 0;
+				PCout <= 0;
+				ADDRin <= 0;
+				DOUTin <= 0;
+				W_D <= 0;
+				PCincr <= 0;
 			end
 		endcase
 	end
