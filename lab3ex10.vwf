@@ -25,7 +25,7 @@ HEADER
 	VERSION = 1;
 	TIME_UNIT = ns;
 	DATA_OFFSET = 0.0;
-	DATA_DURATION = 1000.0;
+	DATA_DURATION = 2000.0;
 	SIMULATION_TIME = 0.0;
 	GRID_PHASE = 0.0;
 	GRID_PERIOD = 10.0;
@@ -1492,16 +1492,6 @@ SIGNAL("proc:processor|Tstep_Q[2]")
 	PARENT = "";
 }
 
-GROUP("seven_segments")
-{
-	MEMBERS = "seg0_out", "seg1_out", "seg2_out", "seg3_out";
-}
-
-GROUP("proc:processor|Tstep_Q")
-{
-	MEMBERS = "proc:processor|Tstep_Q[0]", "proc:processor|Tstep_Q[1]", "proc:processor|Tstep_Q[2]";
-}
-
 SIGNAL("proc:processor|PC")
 {
 	VALUE_TYPE = NINE_LEVEL_BIT;
@@ -1612,12 +1602,23 @@ SIGNAL("proc:processor|PCincr")
 	PARENT = "";
 }
 
+GROUP("seven_segments")
+{
+	MEMBERS = "seg0_out", "seg1_out", "seg2_out", "seg3_out";
+}
+
+GROUP("proc:processor|Tstep_Q")
+{
+	MEMBERS = "proc:processor|Tstep_Q[0]", "proc:processor|Tstep_Q[1]", "proc:processor|Tstep_Q[2]";
+}
+
 TRANSITION_LIST("address[8]")
 {
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1626,7 +1627,8 @@ TRANSITION_LIST("address[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1635,7 +1637,8 @@ TRANSITION_LIST("address[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1644,7 +1647,8 @@ TRANSITION_LIST("address[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1653,7 +1657,8 @@ TRANSITION_LIST("address[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1662,7 +1667,8 @@ TRANSITION_LIST("address[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1671,7 +1677,8 @@ TRANSITION_LIST("address[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1680,7 +1687,8 @@ TRANSITION_LIST("address[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1689,7 +1697,8 @@ TRANSITION_LIST("address[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1700,7 +1709,7 @@ TRANSITION_LIST("clock")
 		REPEAT = 1;
 		NODE
 		{
-			REPEAT = 50;
+			REPEAT = 100;
 			LEVEL 0 FOR 10.0;
 			LEVEL 1 FOR 10.0;
 		}
@@ -1712,7 +1721,8 @@ TRANSITION_LIST("led_output_wires[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1721,7 +1731,8 @@ TRANSITION_LIST("led_output_wires[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1730,7 +1741,8 @@ TRANSITION_LIST("led_output_wires[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1739,7 +1751,8 @@ TRANSITION_LIST("led_output_wires[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1748,7 +1761,8 @@ TRANSITION_LIST("led_output_wires[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1757,7 +1771,8 @@ TRANSITION_LIST("led_output_wires[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1766,7 +1781,8 @@ TRANSITION_LIST("led_output_wires[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1775,7 +1791,8 @@ TRANSITION_LIST("led_output_wires[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1784,7 +1801,8 @@ TRANSITION_LIST("led_output_wires[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1793,7 +1811,7 @@ TRANSITION_LIST("resetn")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 1 FOR 1000.0;
+		LEVEL 1 FOR 2000.0;
 	}
 }
 
@@ -1802,7 +1820,7 @@ TRANSITION_LIST("run")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 1 FOR 1000.0;
+		LEVEL 1 FOR 2000.0;
 	}
 }
 
@@ -1811,7 +1829,8 @@ TRANSITION_LIST("seg0_out[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1820,7 +1839,8 @@ TRANSITION_LIST("seg0_out[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1829,7 +1849,8 @@ TRANSITION_LIST("seg0_out[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1838,7 +1859,8 @@ TRANSITION_LIST("seg0_out[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1847,7 +1869,8 @@ TRANSITION_LIST("seg0_out[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1856,7 +1879,8 @@ TRANSITION_LIST("seg0_out[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1865,7 +1889,8 @@ TRANSITION_LIST("seg0_out[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1874,7 +1899,8 @@ TRANSITION_LIST("seg0_out[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1883,7 +1909,8 @@ TRANSITION_LIST("seg0_out[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1892,7 +1919,8 @@ TRANSITION_LIST("seg1_out[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1901,7 +1929,8 @@ TRANSITION_LIST("seg1_out[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1910,7 +1939,8 @@ TRANSITION_LIST("seg1_out[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1919,7 +1949,8 @@ TRANSITION_LIST("seg1_out[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1928,7 +1959,8 @@ TRANSITION_LIST("seg1_out[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1937,7 +1969,8 @@ TRANSITION_LIST("seg1_out[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1946,7 +1979,8 @@ TRANSITION_LIST("seg1_out[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1955,7 +1989,8 @@ TRANSITION_LIST("seg1_out[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1964,7 +1999,8 @@ TRANSITION_LIST("seg1_out[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1973,7 +2009,8 @@ TRANSITION_LIST("seg2_out[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1982,7 +2019,8 @@ TRANSITION_LIST("seg2_out[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -1991,7 +2029,8 @@ TRANSITION_LIST("seg2_out[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2000,7 +2039,8 @@ TRANSITION_LIST("seg2_out[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2009,7 +2049,8 @@ TRANSITION_LIST("seg2_out[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2018,7 +2059,8 @@ TRANSITION_LIST("seg2_out[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2027,7 +2069,8 @@ TRANSITION_LIST("seg2_out[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2036,7 +2079,8 @@ TRANSITION_LIST("seg2_out[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2045,7 +2089,8 @@ TRANSITION_LIST("seg2_out[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2054,7 +2099,8 @@ TRANSITION_LIST("seg3_out[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2063,7 +2109,8 @@ TRANSITION_LIST("seg3_out[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2072,7 +2119,8 @@ TRANSITION_LIST("seg3_out[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2081,7 +2129,8 @@ TRANSITION_LIST("seg3_out[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2090,7 +2139,8 @@ TRANSITION_LIST("seg3_out[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2099,7 +2149,8 @@ TRANSITION_LIST("seg3_out[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2108,7 +2159,8 @@ TRANSITION_LIST("seg3_out[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2117,7 +2169,8 @@ TRANSITION_LIST("seg3_out[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2126,7 +2179,8 @@ TRANSITION_LIST("seg3_out[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2135,7 +2189,8 @@ TRANSITION_LIST("proc:processor|regn:reg_0|Q[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2144,7 +2199,8 @@ TRANSITION_LIST("proc:processor|regn:reg_0|Q[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2153,7 +2209,8 @@ TRANSITION_LIST("proc:processor|regn:reg_0|Q[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2162,7 +2219,8 @@ TRANSITION_LIST("proc:processor|regn:reg_0|Q[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2171,7 +2229,8 @@ TRANSITION_LIST("proc:processor|regn:reg_0|Q[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2180,7 +2239,8 @@ TRANSITION_LIST("proc:processor|regn:reg_0|Q[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2189,7 +2249,8 @@ TRANSITION_LIST("proc:processor|regn:reg_0|Q[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2198,7 +2259,8 @@ TRANSITION_LIST("proc:processor|regn:reg_0|Q[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2207,7 +2269,8 @@ TRANSITION_LIST("proc:processor|regn:reg_0|Q[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2216,7 +2279,8 @@ TRANSITION_LIST("proc:processor|regn:reg_1|Q[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2225,7 +2289,8 @@ TRANSITION_LIST("proc:processor|regn:reg_1|Q[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2234,7 +2299,8 @@ TRANSITION_LIST("proc:processor|regn:reg_1|Q[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2243,7 +2309,8 @@ TRANSITION_LIST("proc:processor|regn:reg_1|Q[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2252,7 +2319,8 @@ TRANSITION_LIST("proc:processor|regn:reg_1|Q[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2261,7 +2329,8 @@ TRANSITION_LIST("proc:processor|regn:reg_1|Q[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2270,7 +2339,8 @@ TRANSITION_LIST("proc:processor|regn:reg_1|Q[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2279,7 +2349,8 @@ TRANSITION_LIST("proc:processor|regn:reg_1|Q[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2288,7 +2359,8 @@ TRANSITION_LIST("proc:processor|regn:reg_1|Q[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2297,7 +2369,8 @@ TRANSITION_LIST("proc:processor|regn:reg_a|Q[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2306,7 +2379,8 @@ TRANSITION_LIST("proc:processor|regn:reg_a|Q[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2315,7 +2389,8 @@ TRANSITION_LIST("proc:processor|regn:reg_a|Q[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2324,7 +2399,8 @@ TRANSITION_LIST("proc:processor|regn:reg_a|Q[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2333,7 +2409,8 @@ TRANSITION_LIST("proc:processor|regn:reg_a|Q[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2342,7 +2419,8 @@ TRANSITION_LIST("proc:processor|regn:reg_a|Q[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2351,7 +2429,8 @@ TRANSITION_LIST("proc:processor|regn:reg_a|Q[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2360,7 +2439,8 @@ TRANSITION_LIST("proc:processor|regn:reg_a|Q[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2369,7 +2449,8 @@ TRANSITION_LIST("proc:processor|regn:reg_a|Q[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2378,7 +2459,8 @@ TRANSITION_LIST("proc:processor|regn:reg_g|Q[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2387,7 +2469,8 @@ TRANSITION_LIST("proc:processor|regn:reg_g|Q[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2396,7 +2479,8 @@ TRANSITION_LIST("proc:processor|regn:reg_g|Q[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2405,7 +2489,8 @@ TRANSITION_LIST("proc:processor|regn:reg_g|Q[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2414,7 +2499,8 @@ TRANSITION_LIST("proc:processor|regn:reg_g|Q[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2423,7 +2509,8 @@ TRANSITION_LIST("proc:processor|regn:reg_g|Q[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2432,7 +2519,8 @@ TRANSITION_LIST("proc:processor|regn:reg_g|Q[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2441,7 +2529,8 @@ TRANSITION_LIST("proc:processor|regn:reg_g|Q[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2450,7 +2539,8 @@ TRANSITION_LIST("proc:processor|regn:reg_g|Q[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2459,7 +2549,8 @@ TRANSITION_LIST("proc:processor|regn:reg_ir|Q[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2468,7 +2559,8 @@ TRANSITION_LIST("proc:processor|regn:reg_ir|Q[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2477,7 +2569,8 @@ TRANSITION_LIST("proc:processor|regn:reg_ir|Q[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2486,7 +2579,8 @@ TRANSITION_LIST("proc:processor|regn:reg_ir|Q[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2495,7 +2589,8 @@ TRANSITION_LIST("proc:processor|regn:reg_ir|Q[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2504,7 +2599,8 @@ TRANSITION_LIST("proc:processor|regn:reg_ir|Q[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2513,7 +2609,8 @@ TRANSITION_LIST("proc:processor|regn:reg_ir|Q[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2522,7 +2619,8 @@ TRANSITION_LIST("proc:processor|regn:reg_ir|Q[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2531,7 +2629,8 @@ TRANSITION_LIST("proc:processor|regn:reg_ir|Q[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2540,7 +2639,8 @@ TRANSITION_LIST("proc:processor|counter:reg_pc|n[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2549,7 +2649,8 @@ TRANSITION_LIST("proc:processor|counter:reg_pc|n[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2558,7 +2659,8 @@ TRANSITION_LIST("proc:processor|counter:reg_pc|n[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2567,7 +2669,8 @@ TRANSITION_LIST("proc:processor|counter:reg_pc|n[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2576,7 +2679,8 @@ TRANSITION_LIST("proc:processor|counter:reg_pc|n[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2585,7 +2689,8 @@ TRANSITION_LIST("proc:processor|counter:reg_pc|n[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2594,7 +2699,8 @@ TRANSITION_LIST("proc:processor|counter:reg_pc|n[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2603,7 +2709,8 @@ TRANSITION_LIST("proc:processor|counter:reg_pc|n[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2612,7 +2719,8 @@ TRANSITION_LIST("proc:processor|counter:reg_pc|n[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2621,7 +2729,7 @@ TRANSITION_LIST("data_in[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2630,7 +2738,7 @@ TRANSITION_LIST("data_in[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2639,7 +2747,7 @@ TRANSITION_LIST("data_in[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2648,7 +2756,7 @@ TRANSITION_LIST("data_in[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2657,7 +2765,7 @@ TRANSITION_LIST("data_in[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2666,7 +2774,7 @@ TRANSITION_LIST("data_in[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2675,7 +2783,7 @@ TRANSITION_LIST("data_in[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2684,7 +2792,7 @@ TRANSITION_LIST("data_in[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2693,7 +2801,7 @@ TRANSITION_LIST("data_in[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
@@ -2702,7 +2810,8 @@ TRANSITION_LIST("data_out[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2711,7 +2820,8 @@ TRANSITION_LIST("data_out[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2720,7 +2830,8 @@ TRANSITION_LIST("data_out[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2729,7 +2840,8 @@ TRANSITION_LIST("data_out[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2738,7 +2850,8 @@ TRANSITION_LIST("data_out[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2747,7 +2860,8 @@ TRANSITION_LIST("data_out[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2756,7 +2870,8 @@ TRANSITION_LIST("data_out[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2765,7 +2880,8 @@ TRANSITION_LIST("data_out[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2774,7 +2890,8 @@ TRANSITION_LIST("data_out[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL X FOR 1000.0;
+		LEVEL X FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2783,7 +2900,8 @@ TRANSITION_LIST("proc:processor|Tstep_Q[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2792,7 +2910,8 @@ TRANSITION_LIST("proc:processor|Tstep_Q[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2801,7 +2920,8 @@ TRANSITION_LIST("proc:processor|Tstep_Q[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2810,7 +2930,8 @@ TRANSITION_LIST("proc:processor|PC[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2819,7 +2940,8 @@ TRANSITION_LIST("proc:processor|PC[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2828,7 +2950,8 @@ TRANSITION_LIST("proc:processor|PC[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2837,7 +2960,8 @@ TRANSITION_LIST("proc:processor|PC[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2846,7 +2970,8 @@ TRANSITION_LIST("proc:processor|PC[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2855,7 +2980,8 @@ TRANSITION_LIST("proc:processor|PC[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2864,7 +2990,8 @@ TRANSITION_LIST("proc:processor|PC[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2873,7 +3000,8 @@ TRANSITION_LIST("proc:processor|PC[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2882,7 +3010,8 @@ TRANSITION_LIST("proc:processor|PC[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL U FOR 1000.0;
+		LEVEL U FOR 999.0;
+		LEVEL 0 FOR 1001.0;
 	}
 }
 
@@ -2891,7 +3020,7 @@ TRANSITION_LIST("proc:processor|PCincr")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 1000.0;
+		LEVEL 0 FOR 2000.0;
 	}
 }
 
