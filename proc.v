@@ -36,7 +36,7 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 	//TODO: implement DOUT, W, and ADDR drivers
 
 
-	parameter T0 = 3'b000, T1 = 3'b001, T2 = 3'b010, T3 = 3'b011, T4 = 3'b100;
+	parameter T0 = 3'b000, T1 = 3'b001, T2 = 3'b010, T3 = 3'b011, T4 = 3'b100, T5 = 3'b101;
 	parameter mv = 3'b000, mvi = 3'b001, add = 3'b010, sub = 3'b011, ld = 3'b100, st = 3'b101, mvnz = 3'b110;
 	parameter reg0 = 10'b1000000000,
 				 reg1 = 10'b0100000000,
@@ -113,6 +113,10 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				end
 				T4:
 				begin
+					Tstep_D <= T5;
+				end
+				T5:
+				begin
 					Tstep_D <=T0;
 				end
 				default:
@@ -151,10 +155,14 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 			end
 		T1:
 			begin
+			//do nothing
+			end
+		T2:
+			begin
 				IRin <=1;
 				PCincr <=1;
 			end
-		T2: //define signals in time step 1
+		T3: //define signals in time step 1
 			begin
 			case (I)
 				mv: 
@@ -213,16 +221,9 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				end
 			endcase
 			end
-		T3: //define signals in time step 3
+		T4: //define signals in time step 3
 			begin
 			case (I)
-				mvi:
-				begin	
-					PCincr <=1;
-					DINout <=1;
-					RXin <=1;
-					Done <=1;
-				end
 				add:
 				begin
 					RYout <= 1;
@@ -250,9 +251,16 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				end
 			endcase
 			end
-		T4: //define signals in time step 3
+		T5: //define signals in time step 3
 			begin
 			case (I)
+				mvi:
+				begin	
+					PCincr <=1;
+					DINout <=1;
+					RXin <=1;
+					Done <=1;
+				end
 				add:
 				begin
 					Done <= 1;
