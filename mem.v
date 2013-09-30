@@ -16,30 +16,29 @@
 
 /**
  * Module mem - The top level module that contains the memory, counter, and proc to do processor operations to memory
- * mclock - the clock used for the memory 
- * pclock - the clock used for the processor
- * resetn - the reset button for the systems
+ * clock - the clock used for the memory 
+ * resetn - the reset button for the system
  * run - the trigger used for running the system command
- * done - the signal released when an operation has completed
- * bus - the output of the bus lines 
+ * address - Location that data is being read to
+ * led_output_wires - Drive the board LEDs when the two MSB of address is 01.
+ * seg0_out - 7-segment display 0 output
+ * seg1_out - 7-segment display 1 output
+ * seg2_out - 7-segment display 2 output
+ * seg3_out - 7-segment display 3 output
  */
 module mem(clock, resetn, run, address, led_output_wires, seg0_out,
-			seg1_out, seg2_out, seg3_out, data_in, data_out);
+			seg1_out, seg2_out, seg3_out, data_out, data_in);
 	
 	input clock, resetn, run;
 	output [8:0] address;//address connection from memory to proc
 	output [8:0] led_output_wires;
 	output [8:0] seg0_out, seg1_out, seg2_out, seg3_out;
 	
-	/*wire */ output [8:0] data_out;//data wire between memory and proc transfer
-	/*wire */ output [8:0] data_in;//data wire between memory and proc transfer
+	/*wire*/ output [8:0] data_out;//data wire between memory and proc transfer
+	/*wire*/ output [8:0] data_in;//data wire between memory and proc transfer
 	wire a7, a8;
 	wire W;
-	/*
-	reg led_write;//led writing
-	reg mem_write;//memory writing
-	reg seg_write;//7seg writing
-	*/
+
 	wire led_write;
 	wire mem_write;
 	wire seg_write;
