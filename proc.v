@@ -10,9 +10,9 @@
  *
  * Development Log:
  * Date		Developer	Description
- * 09 18 13 				Initial development
+ * 09 18 13 			Initial development
  * 09 19 13	AWS			Added GPRs and associated control signals. Defined bus drivers.
- * 09 25 13					Began development on enhanced version on new branch
+ * 09 25 13				Began development on enhanced version on new branch
  */
 
 /**
@@ -33,10 +33,8 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 	output reg W;
 	output [8:0] DOUT;
 	output [8:0] ADDR;
-	//TODO: implement DOUT, W, and ADDR drivers
 
-
-	parameter T0 = 3'b000, T1 = 3'b001, T2 = 3'b010, T3 = 3'b011, T4 = 3'b100;
+	parameter T0 = 3'b000, T1 = 3'b001, T2 = 3'b010, T3 = 3'b011, T4 = 3'b100, T5 = 3'b101;
 	parameter mv = 3'b000, mvi = 3'b001, add = 3'b010, sub = 3'b011, ld = 3'b100, st = 3'b101, mvnz = 3'b110;
 	parameter reg0 = 10'b1000000000,
 				 reg1 = 10'b0100000000,
@@ -60,7 +58,7 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 	wire [8:0] GinWires, GoutWires;
 	wire [8:0] AoutWires;
 	wire GNZ;
-	and(GNZ, GoutWires[0],
+	or(GNZ, GoutWires[0],
 				GoutWires[1],
 				GoutWires[2],
 				GoutWires[3],
@@ -72,7 +70,7 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 	);
 	// Register input signals
 	reg [0:7] Rin;
-	reg [0:9] busDriver; ///< [R0out, ..., R7out, Gout, DINout]
+	reg [0:9] busDriver; ///< [R0out, ..., R6out, PCout, Gout, DINout]
 	
 	// Control Signals
 	reg IRin, DINout, RYout, RYin, RXout, RXin, Ain, Gin, Gout, AddSub,
@@ -85,6 +83,8 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 	// Control FSM state table change
     always @(Tstep_Q, Run, Done)
     begin
+	 // Default Tstep_D value:
+	 Tstep_D = T0;
 		if(Done) begin
 			Tstep_D <= T0;
 		end
@@ -111,8 +111,14 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				end
 				T4:
 				begin
+					Tstep_D <= T5;
+				end
+				T5:
+				begin
 					Tstep_D <=T0;
 				end
+				default:
+					Tstep_D <= T0;
         endcase
 	  end
     end
@@ -146,10 +152,14 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 			end
 		T1:
 			begin
+			//do nothing
+			end
+		T2:
+			begin
 				IRin <=1;
 				PCincr <=1;
 			end
-		T2: //define signals in time step 1
+		T3: //define signals in time step 1
 			begin
 			case (I)
 				mv: 
@@ -187,8 +197,9 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				begin
 					if(GNZ)
 					begin
-						RYout <=1;
-						ADDRin <=1;
+						RYout <= 1;
+						RXin <= 1;
+						Done <= 1;
 					end
 					else Done <= 1;
 				end
@@ -208,16 +219,9 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				end
 			endcase
 			end
-		T3: //define signals in time step 3
+		T4: //define signals in time step 3
 			begin
 			case (I)
-				mvi:
-				begin	
-					PCincr <=1;
-					DINout <=1;
-					RXin <=1;
-					Done <=1;
-				end
 				add:
 				begin
 					RYout <= 1;
@@ -245,9 +249,16 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				end
 			endcase
 			end
-		T4: //define signals in time step 3
+		T5: //define signals in time step 3
 			begin
 			case (I)
+				mvi:
+				begin	
+					PCincr <=1;
+					DINout <=1;
+					RXin <=1;
+					Done <=1;
+				end
 				add:
 				begin
 					Done <= 1;
@@ -289,27 +300,33 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				end
 			endcase
 			end
+		default:
+			begin
+				IRin <= 0;
+				Done <= 0;
+				DINout <= 0;
+				RYout <= 0;
+				RYin <= 0;
+				RXout <= 0;
+				RXin <= 0;
+				Ain <= 0;
+				Gin <= 0;
+				Gout <= 0;
+				AddSub <= 0;
+				PCout <= 0;
+				ADDRin <= 0;
+				DOUTin <= 0;
+				W_D <= 0;
+				PCincr <= 0;
+			end
 		endcase
 	end
 	
 	// Control FSM flip-flops
 	always @(posedge Clock, negedge Resetn) begin
 		if (!Resetn) begin
-			// Reset all FSM flip-flops and the pc
-			/*
-			busDriver = dinout;
-			DINout = 0;
-			RYout = 0;
-			RYin = 0;
-			RXout = 0;
-			RXin = 0;
-			Ain = 0;
-			Gin = 0;
-			Gout = 0;
-			AddSub = 0;
-			Tstep_Q = 2'b00;
-			Tstep_D = 2'b00;
-			*/
+			// FSM Flip-Flops get reset in above loop
+			// due to multiple driver warnings
 		end
 		else begin
 			Tstep_Q <= Tstep_D;
