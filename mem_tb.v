@@ -2,6 +2,10 @@
  * Embedded Systems (EECE6017C) - Lab 4 testbench
  * Short description of the assignment
  * Author(s): Alex Stephens <stephea5@mail.uc.edu> (AWS)
+ *         (s): Alex Stephens <stephea6@mail.uc.edu> (AWS)
+
+ *         (s): Alex Stephens <stephea6@mail.uc.edu> (AWS)
+
  *	      	  Josh Boroff <boroffja@mail.uc.edu> (JBB)
  *	      	  Adam Wilford <wilforaf@mail.uc.edu> (AFW)
  * Target FPGA: Altera Cyclone II 2C20 (EP2C20F484C7)
@@ -43,7 +47,7 @@ module mem_tb;
     /** Inputs and outputs for dec3to8 **/
     reg [2:0] W_d328;
     reg En_d328;
-    wire [0:8] Y_d328;
+    wire [0:7] Y_d328;
     dec3to8 d328_dut(.W(W_d328), 
                      .En(En_d328), 
                      .Y(Y_d328)
@@ -105,9 +109,10 @@ module mem_tb;
         // Wait for global reset
         #100
         
+        Clock = 1'b1;
         // Open a file for writing
-        file = $fopen("enhanced_proc_testResults.csv", "w");
-
+        outputFile = $fopen("enhanced_proc_testResults.csv", "w");
+        $fwrite(outputFile, "-=*=-Begin Test of Lab 4-=*=-\n");
         // Run the regn test
         doRegnTest;
 
@@ -151,74 +156,388 @@ module mem_tb;
         // do the top level (mem) test
         doMemTest;
 
+        $fwrite(outputFile, "-=*=-Test of Lab 4 completed successfully-=*=-\n");
+        $finish;
     end
 
     /** Run the clock at 50 MHz **/
     always begin
-        Clock = #10 !Clock;
+        #10 Clock = !Clock;
     end
 
     /**
-     *
+     *   
+    reg [8:0] R_regn;
+    reg Rin_regn;
+    wire [8:0] Q_regn;
+    regn regn_dut(.R(R_regn),
+                  .Rin(Rin_regn),
+                  .Clock(Clock),
+                  .Q(Q_regn)
+    );
      */
-    task doRegnTest begin
+    task doRegnTest; begin
+        $fwrite(outputFile, "==========BEGIN MODULE REGN TEST==========\n");
+        $fwrite(outputFile, "Time,R,Rin,Qexp,Q\n");
+        R_regn <= 0;
+        Rin_regn <= 1;
+        #20
+        $fwrite(outputFile, "%t,%h,%b,%h,%h\n", $time, R_regn, Rin_regn, 9'b000000000, Q_regn);
+        if(Q_regn != 9'b000000000) begin
+            $fwrite(outputFile, "===========END MODULE REGN TEST===========\n");
+            $finish;
+        end
 
+        R_regn <= 9'b111111111;
+        Rin_regn <= 1;
+        #20
+        $fwrite(outputFile, "%t,%h,%b,%h,%h\n", $time, R_regn, Rin_regn, 9'b111111111, Q_regn);
+        if(Q_regn != 9'b111111111) begin
+            $fwrite(outputFile, "===========END MODULE REGN TEST===========\n");
+            $finish;
+        end
+
+        Rin_regn <= 0;
+        R_regn <= 9'b010101010;
+        #20
+        $fwrite(outputFile, "%t,%h,%b,%h,%h\n", $time, R_regn, Rin_regn, 9'b111111111, Q_regn);
+        if(Q_regn != 9'b111111111) begin
+            $fwrite(outputFile, "===========END MODULE REGN TEST===========\n");
+            $finish;
+        end
+        $fwrite(outputFile, "===========END MODULE REGN TEST===========\n");
+    end
+    endtask
+
+    /**
+     *
+    reg [2:0] W_d328;
+    reg En_d328;
+    wire [0:8] Y_d328;
+    dec3to8 d328_dut(.W(W_d328), 
+                     .En(En_d328), 
+                     .Y(Y_d328)
+    );
+
+     */
+    task doDec3To8Test; begin
+        $fwrite(outputFile, "==========BEGIN MODULE DEC3TO8 TEST==========\n");
+        $fwrite(outputFile, "Time,W,En,Yexp,Y\n");
+
+        En_d328 <= 1;
+        
+        for(W_d328 = 3'b000; W_d328 < 3'b111; W_d328 = W_d328 + 1) begin
+            #20
+            $fwrite(outputFile, "%t,%h,%b,%h,%h\n", $time, W_d328, En_d328, (8'b10000000 >> W_d328), Y_d328);
+            if(Y_d328 != (8'b10000000 >> W_d328)) begin
+                $fwrite(outputFile, "===========END MODULE DEC3TO8 TEST===========\n");   
+                $finish;
+            end
+        end
+
+        W_d328 <= 3'b111;
+        #20
+        $fwrite(outputFile, "%t,%h,%b,%h,%h\n", $time, W_d328, En_d328, 8'b00000001, Y_d328);
+        if(Y_d328 != 8'b00000001) begin
+            $fwrite(outputFile, "===========END MODULE DEC3TO8 TEST===========\n");   
+            $finish;
+        end
+
+
+        En_d328 <= 0;
+        W_d328 <= 3'b010;
+        #20
+        $fwrite(outputFile, "%t,%h,%b,%h,%h\n", $time, W_d328, En_d328, 8'b00000000, Y_d328);
+        if(Y_d328 != 8'b00000000) begin
+            $fwrite(outputFile, "===========END MODULE DEC3TO8 TEST===========\n");   
+            $finish;      
+        end
+        $fwrite(outputFile, "===========END MODULE DEC3TO8 TEST===========\n");   
+    end
+    endtask
+
+    /**
+     *
+    reg resetn_ctr, en_ctr, load_ctr;
+    reg [8:0] loadVal_ctr;
+    wire [8:0] n_ctr;
+    counter ctr_dut(.clock(Clock),
+                    .reset(resetn_ctr),
+                    .countEn(en_ctr),
+                    .load(load_ctr),
+                    .loadVal(loadVal_ctr),
+                    .n(n_ctr)
+    );
+
+     */
+    task doCounterTest; begin
+        $fwrite(outputFile, "==========BEGIN MODULE COUNTER TEST==========\n");
+        $fwrite(outputFile, "Time,Resetn,countEn,load,loadVal,nexp,n\n");
+
+        resetn_ctr <= 1'b1;
+        en_ctr <= 1'b0;
+
+        // Test loading a value
+        load_ctr <= 1'b1;
+        loadVal_ctr <= 9'b111111111;
+        #20
+        $fwrite(outputFile, "%t,%b,%b,%b,%h,%h,%h\n", $time, resetn_ctr, en_ctr, load_ctr, loadVal_ctr, 9'b111111111, n_ctr);
+        if(n_ctr != 9'b111111111) begin
+            $fwrite(outputFile, "===========END MODULE COUNTER TEST===========\n");
+            $finish;
+        end
+
+        // Test counting
+        load_ctr <= 1'b0;
+        en_ctr <= 1'b1;
+        #20
+        $fwrite(outputFile, "%t,%b,%b,%b,%h,%h,%h\n", $time, resetn_ctr, en_ctr, load_ctr, loadVal_ctr, 9'b000000000, n_ctr);
+        if(n_ctr != 9'b000000000) begin
+            $fwrite(outputFile, "===========END MODULE COUNTER TEST===========\n");
+            $finish;
+        end
+
+        #20
+        $fwrite(outputFile, "%t,%b,%b,%b,%h,%h,%h\n", $time, resetn_ctr, en_ctr, load_ctr, loadVal_ctr, 9'b000000001, n_ctr);
+        if(n_ctr != 9'b000000001) begin
+            $fwrite(outputFile, "===========END MODULE COUNTER TEST===========\n");
+            $finish;
+        end
+
+
+        // Test reset
+        load_ctr <= 1'b0;
+        en_ctr <= 1'b0;
+        resetn_ctr <= 1'b0;
+        #20
+        $fwrite(outputFile, "%t,%b,%b,%b,%h,%h,%h\n", $time, resetn_ctr, en_ctr, load_ctr, loadVal_ctr, 9'b000000000, n_ctr);
+        if(n_ctr != 9'b000000000) begin
+            $fwrite(outputFile, "===========END MODULE COUNTER TEST===========\n");
+            $finish;
+        end
+
+        $fwrite(outputFile, "===========END MODULE COUNTER TEST===========\n");
+    end
+    endtask
+
+    /**
+     *
+    reg sub_as;
+    reg [8:0] a_as, b_as;
+    wire [8:0] out_as;
+    addsub as_dut(.Sub(sub_as),
+                  .A(a_as),
+                  .B(b_as),
+                  .Out(out_as)
+    );
+
+     */
+    task doAddSubTest; begin
+        $fwrite(outputFile, "==========BEGIN MODULE COUNTER TEST==========\n");
+        $fwrite(outputFile, "Time,A,B,AddSub,Outexp,Out\n");
+
+        sub_as <= 1'b0;
+        a_as <= 9'b000000000;
+        b_as <= 9'b000000000;
+        #20
+        $fwrite(outputFile, "%t,%h,%h,%b,%h,%h\n", $time, a_as, b_as, sub_as, 9'b000000000, out_as);
+        if(out_as != 9'b000000000) begin
+            $fwrite(outputFile, "===========END MODULE COUNTER TEST===========\n");
+            $finish;
+        end
+
+        sub_as <= 1'b0;
+        a_as <= 9'b111111111;
+        b_as <= 9'b000000001;
+        #20
+        $fwrite(outputFile, "%t,%h,%h,%b,%h,%h\n", $time, a_as, b_as, sub_as, 9'b000000000, out_as);
+        if(out_as != 9'b000000000) begin
+            $fwrite(outputFile, "===========END MODULE COUNTER TEST===========\n");
+            $finish;
+        end
+
+        sub_as <= 1'b0;
+        a_as <= 9'b101010101;
+        b_as <= 9'b010101010;
+        #20
+        $fwrite(outputFile, "%t,%h,%h,%b,%h,%h\n", $time, a_as, b_as, sub_as, 9'b111111111, out_as);
+        if(out_as != 9'b111111111) begin
+            $fwrite(outputFile, "===========END MODULE COUNTER TEST===========\n");
+            $finish;
+        end
+
+        sub_as <= 1'b1;
+        a_as <= 9'b111111111;
+        b_as <= 9'b000000001;
+        #20
+        $fwrite(outputFile, "%t,%h,%h,%b,%h,%h\n", $time, a_as, b_as, sub_as, 9'b111111110, out_as);
+        if(out_as != 9'b111111110) begin
+            $fwrite(outputFile, "===========END MODULE COUNTER TEST===========\n");
+            $finish;
+        end
+
+        $fwrite(outputFile, "===========END MODULE COUNTER TEST===========\n");
+    end
+    endtask
+
+    /**
+     *
+    reg [3:0] segment_s7s;
+    reg [8:0] valuein_s7s;
+    reg Write_s7s;
+    wire [8:0] s0out_s7s, s1out_s7s, s2out_s7s, s3out_s7s;
+    seg7_scroll s7s_dut(.segment(segment_s7s),
+                        .valuein(valuein_s7s),
+                        .Write(Write_s7s),
+                        .clock(Clock),
+                        .seg_0_output_wires(s0out_s7s),
+                        .seg_1_output_wires(s1out_s7s),
+                        .seg_2_output_wires(s2out_s7s),
+                        .seg_3_output_wires(s3out_s7s)
+    );
+
+     */
+    task doSeg7ScrollTest; begin
+        $fwrite(outputFile, "==========BEGIN MODULE SEG7_SCROLL TEST==========\n");
+        $fwrite(outputFile, "Time,segment,valuein,Write,s0exp,s0,s1exp,s1,s2exp,s2,s3exp,s3\n");
+
+        segment_s7s <= 4'b0000;
+        valuein_s7s <= 9'b001001001;
+        Write_s7s <= 1'b0;
+        #10
+        Write_s7s <= 1'b1;
+        #10
+        $fwrite(outputFile, "%t,%h,%h,%b,%h,%h,%h,%h,%h,%h,%h,%h\n",
+            $time, segment_s7s, valuein_s7s, Write_s7s,
+            9'b000000000, s0out_s7s,
+            9'b000000000, s1out_s7s,
+            9'b000000000, s2out_s7s,
+            9'b000000000, s3out_s7s
+        );
+        if((s0out_s7s != 9'b000000000) ||
+           (s1out_s7s != 9'b000000000) ||
+           (s2out_s7s != 9'b000000000) ||
+           (s3out_s7s != 9'b000000000)) begin
+            $fwrite(outputFile, "===========END MODULE SEG7_SCROLL TEST===========\n");
+            $finish;
+       end
+
+        segment_s7s <= 4'b0001;
+        valuein_s7s <= 9'b001001001;
+        Write_s7s <= 1'b0;
+        #10
+        Write_s7s <= 1'b1;
+        #10
+        $fwrite(outputFile, "%t,%h,%h,%b,%h,%h,%h,%h,%h,%h,%h,%h\n",
+            $time, segment_s7s, valuein_s7s, Write_s7s,
+            9'b001001001, s0out_s7s,
+            9'b000000000, s1out_s7s,
+            9'b000000000, s2out_s7s,
+            9'b000000000, s3out_s7s
+        );
+        if((s0out_s7s != 9'b001001001) ||
+           (s1out_s7s != 9'b000000000) ||
+           (s2out_s7s != 9'b000000000) ||
+           (s3out_s7s != 9'b000000000)) begin
+            $fwrite(outputFile, "===========END MODULE SEG7_SCROLL TEST===========\n");
+            $finish;
+       end
+
+        segment_s7s <= 4'b0110;
+        valuein_s7s <= 9'b110110110;
+        Write_s7s <= 1'b0;
+        #10
+        Write_s7s <= 1'b1;
+        #10
+        $fwrite(outputFile, "%t,%h,%h,%b,%h,%h,%h,%h,%h,%h,%h,%h\n",
+            $time, segment_s7s, valuein_s7s, Write_s7s,
+            9'b001001001, s0out_s7s,
+            9'b110110110, s1out_s7s,
+            9'b110111010, s2out_s7s,
+            9'b000000000, s3out_s7s
+        );
+        if((s0out_s7s != 9'b001001001) ||
+           (s1out_s7s != 9'b110110110) ||
+           (s2out_s7s != 9'b110110110) ||
+           (s3out_s7s != 9'b000000000)) begin
+            $fwrite(outputFile, "===========END MODULE SEG7_SCROLL TEST===========\n");
+            $finish;
+       end
+
+        segment_s7s <= 4'b1000;
+        valuein_s7s <= 9'b101010101;
+        Write_s7s <= 1'b0;
+        #10
+        Write_s7s <= 1'b0;
+        #10
+        $fwrite(outputFile, "%t,%h,%h,%b,%h,%h,%h,%h,%h,%h,%h,%h\n",
+            $time, segment_s7s, valuein_s7s, Write_s7s,
+            9'b001001001, s0out_s7s,
+            9'b110110110, s1out_s7s,
+            9'b110111010, s2out_s7s,
+            9'b000000000, s3out_s7s
+        );
+        if((s0out_s7s != 9'b001001001) ||
+           (s1out_s7s != 9'b110110110) ||
+           (s2out_s7s != 9'b110110110) ||
+           (s3out_s7s != 9'b000000000)) begin
+            $fwrite(outputFile, "===========END MODULE SEG7_SCROLL TEST===========\n");
+            $finish;
+       end
+
+
+        $fwrite(outputFile, "===========END MODULE SEG7_SCROLL TEST===========\n");
+    end
+    endtask
+
+    /**
+     *
+    reg [8:0] switches_sl;
+    wire [8:0] value_sl;
+    switch_load sl_dut(.clock(Clock),
+                       .switches(switches_sl),
+                       .value(value_sl)
+    );
+
+     */
+    task doSwitchLoadTest; begin
+        $fwrite(outputFile, "==========BEGIN MODULE SWITCH_LOAD TEST==========\n");
+        $fwrite(outputFile, "Time,switches,valueExp,value\n");
+        
+        switches_sl <= 9'b010100110;
+        #20
+        $fwrite(outputFile, "%t,%h,%h,%h\n", $time, switches_sl, 9'b010100110, value_sl);
+        if(value_sl != 9'b010100110) begin
+            $fwrite(outputFile, "===========END MODULE SWITCH_LOAD TEST===========\n");
+            $finish;
+        end
+
+        $fwrite(outputFile, "===========END MODULE SWITCH_LOAD TEST===========\n");
+    end
     endtask
 
     /**
      *
      */
-    task doDec3To8Test begin
+    task doControlUnitTest; begin
 
+    end
     endtask
 
     /**
      *
      */
-    task doCounterTest begin
+    task doProcTest; begin
 
+    end
     endtask
 
     /**
      *
      */
-    task doAddSubTest begin
+    task doMemTest; begin
 
-    endtask
-
-    /**
-     *
-     */
-    task doSeg7ScrollTest begin
-
-    endtask
-
-    /**
-     *
-     */
-    task doSwitchLoadTest begin
-
-    endtask
-
-    /**
-     *
-     */
-    task doControlUnitTest begin
-
-    endtask
-
-    /**
-     *
-     */
-    task doProcTest begin
-
-    endtask
-
-    /**
-     *
-     */
-    task doMemTest begin
-
+    end
     endtask
 
 
