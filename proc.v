@@ -48,7 +48,7 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				 dinout = 10'b0000000001;
 	
 	//declare variables
-	reg [2:0] Tstep_Q/*synthesis preserve*/;
+	reg [2:0] Tstep_Q;
 	reg [2:0] Tstep_D;
 	reg [8:0] BusWires;
 	reg Done;
@@ -124,7 +124,7 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
     end
 
 	// Control FSM outputs
-	always @(Tstep_Q or I or regX or regY or GNZ)
+	always @(Tstep_Q or I /*or regX or regY */or GNZ)
 	begin
 		//: : : specify initial values
 		IRin <= 0;
@@ -327,6 +327,8 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 		if (!Resetn) begin
 			// FSM Flip-Flops get reset in above loop
 			// due to multiple driver warnings
+			Tstep_Q <=0;
+			W <=0;
 		end
 		else begin
 			Tstep_Q <= Tstep_D;
