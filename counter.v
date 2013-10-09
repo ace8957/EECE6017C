@@ -25,7 +25,9 @@ module counter(clock, reset, countEn, load, loadVal, n);
 	input [8:0] loadVal;
 	output reg [8:0] n;
 	
-	initial n = 9'b000000000;
+	initial begin
+		n = 9'b000000000;
+	end
 	
 	always @(posedge clock or negedge reset) 
 	begin

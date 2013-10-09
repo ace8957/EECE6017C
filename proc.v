@@ -34,7 +34,7 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 	output [8:0] DOUT;
 	output [8:0] ADDR;
 
-	parameter T0 = 3'b000, T1 = 3'b001, T2 = 3'b010, T3 = 3'b011, T4 = 3'b100, T5 = 3'b101;
+	parameter T0 = 3'b000, T1 = 3'b001, T2 = 3'b010, T3 = 3'b011, T4 = 3'b100, T5 = 3'b101, T6 = 3'b110;
 	parameter mv = 3'b000, mvi = 3'b001, add = 3'b010, sub = 3'b011, ld = 3'b100, st = 3'b101, mvnz = 3'b110;
 	parameter reg0 = 10'b1000000000,
 				 reg1 = 10'b0100000000,
@@ -48,7 +48,7 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				 dinout = 10'b0000000001;
 	
 	//declare variables
-	reg [2:0] Tstep_Q/*synthesis preserve*/;
+	reg [2:0] Tstep_Q;
 	reg [2:0] Tstep_D;
 	reg [8:0] BusWires;
 	reg Done;
@@ -80,6 +80,25 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 	dec3to8 decX (IRoutWires[5:3], 1'b1, regX);
 	dec3to8 decY (IRoutWires[2:0], 1'b1, regY);
 		
+	initial begin
+		IRin <= 0;
+		Done <= 0;
+		DINout <= 1;
+		RYout <= 0;
+		RYin <= 0;
+		RXout <= 0;
+		RXin <= 0;
+		Ain <= 0;
+		Gin <= 0;
+		Gout <= 0;
+		AddSub <= 0;
+		PCout <= 0;
+		ADDRin <= 0;
+		DOUTin <= 0;
+		W_D <= 0;
+		PCincr <= 0;
+	end
+	
 	// Control FSM state table change
     always @(Tstep_Q, Run, Done)
     begin
@@ -115,7 +134,11 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				end
 				T5:
 				begin
-					Tstep_D <=T0;
+					Tstep_D <= T6;
+				end
+				T6:
+				begin
+					Tstep_D <= T0;
 				end
 				default:
 					Tstep_D <= T0;
@@ -124,87 +147,12 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
     end
 
 	// Control FSM outputs
-	always @(Tstep_Q or I or regX or regY or GNZ)
+	always @(Tstep_Q or I or GNZ)
 	begin
-		//: : : specify initial values
-		IRin <= 0;
-		Done <= 0;
-		DINout <= 0;
-		RYout <= 0;
-		RYin <= 0;
-		RXout <= 0;
-		RXin <= 0;
-		Ain <= 0;
-		Gin <= 0;
-		Gout <= 0;
-		AddSub <= 0;
-		PCout <= 0;
-		ADDRin <= 0;
-		DOUTin <= 0;
-		W_D <= 0;
-		PCincr <= 0;
+		$display("Doing timestep %d\n", Tstep_Q);
 		case (Tstep_Q)
 		T0: // store DIN in IR in time step 0
 			begin
-			//IRin <= 1;
-				PCout <= 1;
-				ADDRin <= 1;
-			end
-		T1:
-			begin
-			//do nothing
-			end
-		T2:
-			begin
-				IRin <=1;
-				PCincr <=1;
-			end
-		T3: //define signals in time step 1
-			begin
-			case (I)
-				mv: 
-				begin
-					RYout <= 1;
-					RXin <= 1;
-					Done <= 1;			
-				end
-				mvi:
-				begin
-					PCout <=1;
-					ADDRin <=1;
-				end
-				add:
-				begin
-					RXout <= 1;
-					Ain <= 1;
-				end
-				sub:
-				begin
-					RXout <= 1;
-					Ain <= 1;
-				end
-				ld:
-				begin
-					RYout <=1;
-					ADDRin <=1;
-				end
-				st:
-				begin
-					RYout <=1;
-					ADDRin <=1;
-				end
-				mvnz:
-				begin
-					if(GNZ)
-					begin
-						RYout <= 1;
-						RXin <= 1;
-						Done <= 1;
-					end
-					else Done <= 1;
-				end
-				default:
-				begin
 				IRin <= 0;
 				Done <= 0;
 				DINout <= 0;
@@ -216,6 +164,227 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 				Gin <= 0;
 				Gout <= 0;
 				AddSub <= 0;
+				PCout <= 1;
+				ADDRin <= 1;
+				DOUTin <= 0;
+				W_D <= 0;
+				PCincr <= 0;
+			end
+		T1:
+			begin
+				IRin <= 0;
+				Done <= 0;
+				DINout <= 1;
+				RYout <= 0;
+				RYin <= 0;
+				RXout <= 0;
+				RXin <= 0;
+				Ain <= 0;
+				Gin <= 0;
+				Gout <= 0;
+				AddSub <= 0;
+				PCout <= 0;
+				ADDRin <= 0;
+				DOUTin <= 0;
+				W_D <= 0;
+				PCincr <= 0;
+			end
+		T2:
+			begin
+				IRin <= 1;
+				Done <= 0;
+				DINout <= 0;
+				RYout <= 0;
+				RYin <= 0;
+				RXout <= 0;
+				RXin <= 0;
+				Ain <= 0;
+				Gin <= 0;
+				Gout <= 0;
+				AddSub <= 0;
+				PCout <= 0;
+				ADDRin <= 0;
+				DOUTin <= 0;
+				W_D <= 0;
+				PCincr <= 1;
+			end
+		T3: //define signals in time step 1
+			begin
+			$display("I = %b\n", I);
+			case (I)
+				mv: 
+				begin
+					IRin <= 0;
+					Done <= 1;
+					DINout <= 0;
+					RYout <= 1;
+					RYin <= 0;
+					RXout <= 0;
+					RXin <= 1;
+					Ain <= 0;
+					Gin <= 0;
+					Gout <= 0;
+					AddSub <= 0;
+					PCout <= 0;
+					ADDRin <= 0;
+					DOUTin <= 0;
+					W_D <= 0;
+					PCincr <= 0;
+				end
+				mvi:
+				begin
+					IRin <= 0;
+					Done <= 0;
+					DINout <= 0;
+					RYout <= 0;
+					RYin <= 0;
+					RXout <= 0;
+					RXin <= 0;
+					Ain <= 0;
+					Gin <= 0;
+					Gout <= 0;
+					AddSub <= 0;
+					PCout <= 1;
+					ADDRin <= 1;
+					DOUTin <= 0;
+					W_D <= 0;
+					PCincr <= 0;
+				end
+				add:
+				begin
+					IRin <= 0;
+					Done <= 0;
+					DINout <= 0;
+					RYout <= 0;
+					RYin <= 0;
+					RXout <= 1;
+					RXin <= 0;
+					Ain <= 1;
+					Gin <= 0;
+					Gout <= 0;
+					AddSub <= 0;
+					PCout <= 0;
+					ADDRin <= 0;
+					DOUTin <= 0;
+					W_D <= 0;
+					PCincr <= 0;
+				end
+				sub:
+				begin
+					IRin <= 0;
+					Done <= 0;
+					DINout <= 0;
+					RYout <= 0;
+					RYin <= 0;
+					RXout <= 1;
+					RXin <= 0;
+					Ain <= 1;
+					Gin <= 0;
+					Gout <= 0;
+					AddSub <= 0;
+					PCout <= 0;
+					ADDRin <= 0;
+					DOUTin <= 0;
+					W_D <= 0;
+					PCincr <= 0;
+				end
+				ld:
+				begin
+					IRin <= 0;
+					Done <= 0;
+					DINout <= 0;
+					RYout <= 1;
+					RYin <= 0;
+					RXout <= 0;
+					RXin <= 0;
+					Ain <= 0;
+					Gin <= 0;
+					Gout <= 0;
+					AddSub <= 0;
+					PCout <= 0;
+					ADDRin <= 1;
+					DOUTin <= 0;
+					W_D <= 0;
+					PCincr <= 0;
+				end
+				st:
+				begin
+					$display("Doing st on tstep 3\n");
+					IRin <= 0;
+					Done <= 0;
+					DINout <= 0;
+					RYout <= 1;
+					RYin <= 0;
+					RXout <= 0;
+					RXin <= 0;
+					Ain <= 0;
+					Gin <= 0;
+					Gout <= 0;
+					AddSub <= 0;
+					PCout <= 0;
+					ADDRin <= 1;
+					DOUTin <= 0;
+					W_D <= 0;
+					PCincr <= 0;
+				end
+				mvnz:
+				begin
+					if(GNZ)
+					begin
+						IRin <= 0;
+						Done <= 1;
+						DINout <= 0;
+						RYout <= 1;
+						RYin <= 0;
+						RXout <= 0;
+						RXin <= 1;
+						Ain <= 0;
+						Gin <= 0;
+						Gout <= 0;
+						AddSub <= 0;
+						PCout <= 0;
+						ADDRin <= 0;
+						DOUTin <= 0;
+						W_D <= 0;
+						PCincr <= 0;
+					end
+					else  begin
+						IRin <= 0;
+						Done <= 1;
+						DINout <= 0;
+						RYout <= 0;
+						RYin <= 0;
+						RXout <= 0;
+						RXin <= 0;
+						Ain <= 0;
+						Gin <= 0;
+						Gout <= 0;
+						AddSub <= 0;
+						PCout <= 0;
+						ADDRin <= 0;
+						DOUTin <= 0;
+						W_D <= 0;
+						PCincr <= 0;
+					end
+				end
+				default:
+				begin
+					IRin <= 0;
+					Done <= 0;
+					DINout <= 1;
+					RYout <= 0;
+					RYin <= 0;
+					RXout <= 0;
+					RXin <= 0;
+					Ain <= 0;
+					Gin <= 0;
+					Gout <= 0;
+					AddSub <= 0;
+					PCout <= 0;
+					ADDRin <= 0;
+					DOUTin <= 0;
+					W_D <= 0;
+					PCincr <= 0;
 				end
 			endcase
 			end
@@ -224,20 +393,47 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 			case (I)
 				add:
 				begin
+					IRin <= 0;
+					Done <= 0;
+					DINout <= 0;
 					RYout <= 1;
-					Gin <= 1;				
+					RYin <= 0;
+					RXout <= 0;
+					RXin <= 0;
+					Ain <= 0;
+					Gin <= 1;
+					Gout <= 0;
+					AddSub <= 0;
+					PCout <= 0;
+					ADDRin <= 0;
+					DOUTin <= 0;
+					W_D <= 0;
+					PCincr <= 0;
 				end
 				sub:
-				begin
-					RYout <= 1;
-					Gin <= 1;
-					AddSub <= 1;
-				end
-				default:
 				begin
 					IRin <= 0;
 					Done <= 0;
 					DINout <= 0;
+					RYout <= 1;
+					RYin <= 0;
+					RXout <= 0;
+					RXin <= 0;
+					Ain <= 0;
+					Gin <= 1;
+					Gout <= 0;
+					AddSub <= 1;
+					PCout <= 0;
+					ADDRin <= 0;
+					DOUTin <= 0;
+					W_D <= 0;
+					PCincr <= 0;
+				end
+				default:
+				begin		
+					IRin <= 0;
+					Done <= 0;
+					DINout <= 1;
 					RYout <= 0;
 					RYin <= 0;
 					RXout <= 0;
@@ -246,6 +442,11 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 					Gin <= 0;
 					Gout <= 0;
 					AddSub <= 0;
+					PCout <= 0;
+					ADDRin <= 0;
+					DOUTin <= 0;
+					W_D <= 0;
+					PCincr <= 0;
 				end
 			endcase
 			end
@@ -254,41 +455,104 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 			case (I)
 				mvi:
 				begin	
-					PCincr <=1;
-					DINout <=1;
-					RXin <=1;
-					Done <=1;
+					IRin <= 0;
+					Done <= 1;
+					DINout <= 1;
+					RYout <= 0;
+					RYin <= 0;
+					RXout <= 0;
+					RXin <= 1;
+					Ain <= 0;
+					Gin <= 0;
+					Gout <= 0;
+					AddSub <= 0;
+					PCout <= 0;
+					ADDRin <= 0;
+					DOUTin <= 0;
+					W_D <= 0;
+					PCincr <= 1;
 				end
 				add:
 				begin
+					IRin <= 0;
 					Done <= 1;
-					Gout <= 1;
+					DINout <= 0;
+					RYout <= 0;
+					RYin <= 0;
+					RXout <= 0;
 					RXin <= 1;
+					Ain <= 0;
+					Gin <= 0;
+					Gout <= 1;
+					AddSub <= 0;
+					PCout <= 0;
+					ADDRin <= 0;
+					DOUTin <= 0;
+					W_D <= 0;
+					PCincr <= 0;
 				end
 				sub:
 				begin
+					IRin <= 0;
 					Done <= 1;
+					DINout <= 0;
+					RYout <= 0;
+					RYin <= 0;
+					RXout <= 0;
 					RXin <= 1;
-					Gout <= 1;				
+					Ain <= 0;
+					Gin <= 0;
+					Gout <= 1;
+					AddSub <= 0;
+					PCout <= 0;
+					ADDRin <= 0;
+					DOUTin <= 0;
+					W_D <= 0;
+					PCincr <= 0;
 				end
 				ld:
 				begin
-					DINout <=1;
-					RXin <=1;
-					Done <=1;
+					IRin <= 0;
+					Done <= 1;
+					DINout <= 1;
+					RYout <= 0;
+					RYin <= 0;
+					RXout <= 0;
+					RXin <= 1;
+					Ain <= 0;
+					Gin <= 0;
+					Gout <= 0;
+					AddSub <= 0;
+					PCout <= 0;
+					ADDRin <= 0;
+					DOUTin <= 0;
+					W_D <= 0;
+					PCincr <= 0;
 				end
 				st:
 				begin	
-					RXout <=1;
-					DOUTin <=1;
-					W_D <=1;
-					Done <=1;//This may need to be in another step unsure
+					IRin <= 0;
+					Done <= 0;
+					DINout <= 0;
+					RYout <= 0;
+					RYin <= 0;
+					RXout <= 1;
+					RXin <= 0;
+					Ain <= 0;
+					Gin <= 0;
+					Gout <= 0;
+					AddSub <= 0;
+					PCout <= 0;
+					ADDRin <= 0;
+					DOUTin <= 1;
+					W_D <= 1;
+					PCincr <= 0;
 				end
 				default:
 				begin
 					IRin <= 0;
 					Done <= 0;
-					DINout <= 0;
+					DINout <= 1;
 					RYout <= 0;
 					RYin <= 0;
 					RXout <= 0;
@@ -297,14 +561,61 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 					Gin <= 0;
 					Gout <= 0;
 					AddSub <= 0;
+					PCout <= 0;
+					ADDRin <= 0;
+					DOUTin <= 0;
+					W_D <= 0;
+					PCincr <= 0;
 				end
 			endcase
 			end
-		default:
+			T6: begin
+				case(I)
+					st:
+					begin
+						IRin <= 0;
+						Done <= 1;
+						DINout <= 1;
+						RYout <= 0;
+						RYin <= 0;
+						RXout <= 0;
+						RXin <= 0;
+						Ain <= 0;
+						Gin <= 0;
+						Gout <= 0;
+						AddSub <= 0;
+						PCout <= 0;
+						ADDRin <= 0;
+						DOUTin <= 0;
+						W_D <= 0;
+						PCincr <= 0;
+					end
+					default:
+					begin
+						IRin <= 0;
+						Done <= 0;
+						DINout <= 1;
+						RYout <= 0;
+						RYin <= 0;
+						RXout <= 0;
+						RXin <= 0;
+						Ain <= 0;
+						Gin <= 0;
+						Gout <= 0;
+						AddSub <= 0;
+						PCout <= 0;
+						ADDRin <= 0;
+						DOUTin <= 0;
+						W_D <= 0;
+						PCincr <= 0;
+					end
+				endcase
+			end
+			default:
 			begin
 				IRin <= 0;
 				Done <= 0;
-				DINout <= 0;
+				DINout <= 1;
 				RYout <= 0;
 				RYin <= 0;
 				RXout <= 0;
@@ -325,8 +636,8 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 	// Control FSM flip-flops
 	always @(posedge Clock, negedge Resetn) begin
 		if (!Resetn) begin
-			// FSM Flip-Flops get reset in above loop
-			// due to multiple driver warnings
+			Tstep_Q <= T0;
+			W <= 0;
 		end
 		else begin
 			Tstep_Q <= Tstep_D;
@@ -377,23 +688,26 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 	begin // Check control signals and set appropriate flip-flops
 		//RYin, RXin, Ain, Gin, AddSub;
 			// Set the bus driver
-			if(DINout && !(RXout || RYout || Gout)) begin
+			if(DINout && !(RXout || RYout || Gout || PCout)) begin
 				busDriver = 10'b0000000001;
 			end
-			else if(RXout && !(DINout || RYout || Gout)) begin
+			else if(RXout && !(DINout || RYout || Gout || PCout)) begin
 				busDriver = {regX, 1'b0, 1'b0};
 			end
-			else if(RYout && !(RXout || DINout || Gout)) begin
+			else if(RYout && !(RXout || DINout || Gout || PCout)) begin
 				busDriver = {regY, 1'b0, 1'b0};
 			end
-			else if(Gout && !(RXout || RYout || DINout)) begin
+			else if(Gout && !(RXout || RYout || DINout || PCout)) begin
 				busDriver = gout;
 			end
 			else if(PCout && !(RXout || RYout || DINout || Gout)) begin
 				busDriver = pcout;
 			end
 			else begin
-				$display("Ambiguous bus driver!! Setting to DINout\n");
+				$display("Ambiguous bus driver!! Setting to DINout at time ");
+				$display($time);
+				$display("DINout = %b\nRXout = %b\nRYout = %b\nGout = %b\nPCout = %b\n",
+							DINout, RXout, RYout, Gout, PCout);
 				busDriver = dinout;
 			end
 			
@@ -426,7 +740,8 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 			dinout: BusWires <= DIN;
 			default:
 			begin
-				$display("Undefined bus driver!! Defaulting to DIN!!\n");
+				$display("Undefined bus driver!! Defaulting to DIN at time ");
+				$display($time);
 				BusWires <= DIN;
 			end
 		endcase
