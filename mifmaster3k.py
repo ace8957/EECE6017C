@@ -235,7 +235,7 @@ with open(assemblyFileName, "r") as assemblyFile :
                         checkWidth(int(valBin, 2), lineNum);
                         mifOut.write("\t"+toHex(memAddr)+"\t:\t"+toHex(int(valBin, 2))+";\n");
                 else :
-                    print "Malformed line ("+str(lineNum)+")\n";
+                    print("Malformed line ("+str(lineNum)+")\n");
                     quit();
                 lineNum = lineNum + 1;
                 memAddr = memAddr + 1;

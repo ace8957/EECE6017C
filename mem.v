@@ -26,17 +26,17 @@
  * seg2_out - 7-segment display 2 output
  * seg3_out - 7-segment display 3 output
  */
-module mem(clock, resetn, run, address, switches, led_output_wires, seg0_out,
-			seg1_out, seg2_out, seg3_out, data_out, data_in);
+module mem(clock, resetn, run, switches, led_output_wires, seg0_out,
+			seg1_out, seg2_out, seg3_out);
 	
 	input clock, resetn, run;
 	input [8:0] switches;
-	output [8:0] address;//address connection from memory to proc
+	wire[8:0] address;//address connection from memory to proc
 	output [8:0] led_output_wires;
 	output [8:0] seg0_out, seg1_out, seg2_out, seg3_out;
 	
-	/*wire*/ output [8:0] data_out;//data wire between memory and proc transfer
-	/*wire*/ output reg[8:0] data_in;//data wire between memory and proc transfer
+	wire [8:0] data_out;//data wire between memory and proc transfer
+	reg [8:0] data_in;//data wire between memory and proc transfer
 	wire a7, a8;
 	wire W;
 

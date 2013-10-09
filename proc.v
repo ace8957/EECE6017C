@@ -636,8 +636,10 @@ module proc (DIN, Resetn, Clock, Run, DOUT, ADDR, W);
 	// Control FSM flip-flops
 	always @(posedge Clock, negedge Resetn) begin
 		if (!Resetn) begin
-			Tstep_Q <= T0;
-			W <= 0;
+			// FSM Flip-Flops get reset in above loop
+			// due to multiple driver warnings
+			Tstep_Q <=0;
+			W <=0;
 		end
 		else begin
 			Tstep_Q <= Tstep_D;
