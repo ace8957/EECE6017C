@@ -99,7 +99,21 @@ module mem_tb;
     );
 
     /** TODO Control unit **/
-    /** TODO proc **/
+	 
+    /** Inputs and outputs for proc **/
+	 reg [8:0] DIN_proc;
+	 reg Resetn_proc, Run_proc;
+	 wire [8:0] DOUT_proc, ADDR_proc;
+	 wire W_proc;
+	 proc proc_dut(.DIN(DIN_proc),
+						.Resetn(Resetn_proc),
+						.Clock(Clock),
+						.Run(Run_proc),
+						.DOUT(DOUT_proc),
+						.ADDR(ADDR_proc),
+						.W(W_proc)
+	 );
+	 
     /** TODO mem **/
 
     /** File for writing test data **/
@@ -110,6 +124,8 @@ module mem_tb;
         #100
         
         Clock = 1'b1;
+		  Resetn_proc <= 1'b0;
+		  Run_proc <= 1'b0;
         // Open a file for writing
         outputFile = $fopen("enhanced_proc_testResults.csv", "w");
         $fwrite(outputFile, "-=*=-Begin Test of Lab 4-=*=-\n");
@@ -526,11 +542,290 @@ module mem_tb;
 
     /**
      *
+	 reg [8:0] DIN_proc;
+	 reg Resetn_proc, Run_proc;
+	 wire [8:0] DOUT_proc, ADDR_proc;
+	 wire W_proc;
+	 proc proc_dut(.DIN(DIN_proc),
+						.Resetn(Resetn_proc),
+						.Clock(Clock),
+						.Run(Run_proc),
+						.DOUT(DOUT_proc),
+						.ADDR(ADDR_proc),
+						.W(W_proc)
+	 );
      */
     task doProcTest; begin
+        $fwrite(outputFile, "==========BEGIN MODULE PROC TEST==========\n");
+        $fwrite(outputFile, "Time,DIN,Resetn,Run,DOUTexp,DOUT,ADDRexp,ADDR,Wexp,W\n");
+			//mvi     R0,#d100
+			// Begin T0 for mvi
+			DIN_proc <= 9'h40;
+			Run_proc <= 1'b1;
+			Resetn_proc <= 1'b1;
+			#20
+			
+			// Begin T1 for mvi
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 0, ADDR_proc, 0, W_proc);
+			Run_proc <= 1'b0;
+			#20
+			
+			// Begin T2 for mvi
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 0, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T3 for mvi
+			DIN_proc <= 9'h64;
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd1, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T4 for mvi
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd1, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T5 for mvi
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd1, ADDR_proc, 0, W_proc);
+			#20
+			
+			//mvi     R1,#d101
+			// Begin T0 for mvi
+			DIN_proc <= 9'h48;
+			Run_proc <= 1'b1;
+			#20
+			
+			// Begin T1 for mvi
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd2, ADDR_proc, 0, W_proc);
+			Run_proc <= 1'b0;
+			#20
+			
+			// Begin T2 for mvi
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd2, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T3 for mvi
+			DIN_proc <= 9'h65;
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd3, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T4 for mvi
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd3, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T5 for mvi
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd3, ADDR_proc, 0, W_proc);
+			#20
+			
+			//mvi     R2,#d1
+			// Begin T0 for mvi
+			DIN_proc <= 9'h50;
+			Run_proc <= 1'b1;
+			#20
+			
+			// Begin T1 for mvi
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd4, ADDR_proc, 0, W_proc);
+			Run_proc <= 1'b0;
+			#20
+			
+			// Begin T2 for mvi
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd4, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T3 for mvi
+			DIN_proc <= 9'h1;
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd5, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T4 for mvi
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd5, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T5 for mvi
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd5, ADDR_proc, 0, W_proc);
+			#20
+			
+			//sub     R0,R1
+			// Begin T0 for sub
+			DIN_proc <= 9'hc1;
+			Run_proc <= 1'b1;
+			#20
+			
+			// Begin T1 for sub
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd6, ADDR_proc, 0, W_proc);
+			Run_proc <= 1'b0;
+			#20
+			
+			// Begin T2 for sub
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd6, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T3 for sub
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd6, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T4 for sub
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd6, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T5 for sub
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd6, ADDR_proc, 0, W_proc);
+			#20
 
+			//mvnz    R1,R0
+			// Begin T0 for sub
+			DIN_proc <= 9'h188;
+			Run_proc <= 1'b1;
+			#20
+			
+			// Begin T1 for sub
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd7, ADDR_proc, 0, W_proc);
+			Run_proc <= 1'b0;
+			#20
+			
+			// Begin T2 for sub
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd7, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T3 for sub
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd7, ADDR_proc, 0, W_proc);
+			#20
+			
+			//add     R0,R2
+			// Begin T0 for add
+			DIN_proc <= 9'h82;
+			Run_proc <= 1'b1;
+			#20
+			
+			// Begin T1 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd8, ADDR_proc, 0, W_proc);
+			Run_proc <= 1'b0;
+			#20
+			
+			// Begin T2 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd8, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T3 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd8, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T4 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd8, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T5 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd8, ADDR_proc, 0, W_proc);
+			#20
+
+			//add     R3,R1
+			// Begin T0 for add
+			DIN_proc <= 9'h99;
+			Run_proc <= 1'b1;
+			#20
+			
+			// Begin T1 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd9, ADDR_proc, 0, W_proc);
+			Run_proc <= 1'b0;
+			#20
+			
+			// Begin T2 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd9, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T3 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd9, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T4 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd9, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T5 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd9, ADDR_proc, 0, W_proc);
+			#20
+
+			//' Store -1 to address 0
+			//st      R3,R0
+			// Begin T0 for add
+			DIN_proc <= 9'h158;
+			Run_proc <= 1'b1;
+			#20
+			
+			// Begin T1 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd10, ADDR_proc, 0, W_proc);
+			Run_proc <= 1'b0;
+			#20
+			
+			// Begin T2 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd10, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T3 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd11, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T4 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 0, DOUT_proc, 9'd11, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T5 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 9'b111111111, DOUT_proc, 9'd11, ADDR_proc, 1'b1, W_proc);
+			#20
+
+			//' Load -1 from addr 0
+			//ld      R5,R0		  
+			// Begin T0 for add
+			DIN_proc <= 9'h128;
+			Run_proc <= 1'b1;
+			#20
+			
+			// Begin T1 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 9'b111111111, DOUT_proc, 9'd12, ADDR_proc, 0, W_proc);
+			Run_proc <= 1'b0;
+			#20
+			
+			// Begin T2 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 9'b111111111, DOUT_proc, 9'd12, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T3 for add
+			DIN_proc <= 9'b111111111;
+			logProc(DIN_proc, Resetn_proc, Run_proc, 9'b111111111, DOUT_proc, 0, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T4 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 9'b111111111, DOUT_proc, 0, ADDR_proc, 0, W_proc);
+			#20
+			
+			// Begin T5 for add
+			logProc(DIN_proc, Resetn_proc, Run_proc, 9'b111111111, DOUT_proc, 0, ADDR_proc, 0, W_proc);
+			#20
+        $fwrite(outputFile, "===========END MODULE PROC TEST===========\n");
     end
     endtask
+
+	 task logProc;
+	     input [8:0] DIN;
+		  input Resetn;
+		  input Run;
+		  input [8:0] DOUTexp;
+		  input [8:0] DOUT;
+		  input [8:0] ADDRexp;
+		  input [8:0] ADDR;
+		  input Wexp;
+		  input W;
+		  begin
+		  $fwrite(outputFile, "%t,%h,%b,%b,%h,%h,%h,%h,%b,%b\n",
+									 $time,DIN,Resetn,Run,
+									 DOUTexp,DOUT,ADDRexp,ADDR,Wexp,W);
+		  if((DOUT != DOUTexp) ||
+			  (ADDR != ADDRexp) ||
+			  (W != Wexp))
+			  begin
+		      $fwrite(outputFile, "===========END MODULE PROC TEST===========\n");
+				$finish;
+		  end
+	 end
+	 endtask
 
     /**
      *

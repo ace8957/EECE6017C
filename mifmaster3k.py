@@ -10,7 +10,8 @@ import sys;
 global argNum;
 global dataWidth;
 global dataDepth;
-global assemblyFile;
+global assemblyFileName;
+global memAddr;
 
 #
 # convert an integer value to a hex string
@@ -51,7 +52,11 @@ Provides basic necessities in creating the MIF:
         #hXXXXXXX... with X representing a hex digit
         #dXXXXXXX... with X representing a decimal digit
         #bXXXXXXX... with X representing a binary digit
+        $(+/-)N     with $ represents the current PC address and N is an offset
         If no base is specified, decimal is assumed.
+
+        Example of an infinite loop:
+        mvi PC,$
 """);
 
 #
@@ -130,6 +135,17 @@ def getImmediateData(idata):
         retVal = int(idata[2:]);
     elif idata[:2] == "#b":
         retVal = int(idata[2:], 2);
+    elif idata[0] == "$":
+        retVal = memAddr;
+        if len(idata) == 2 :
+            raise Exception("Bad PC offset");
+        elif len(idata) > 2 :
+            if idata[1] == "-" or idata[1] == "+" :
+                retVal = retVal + int(idata[1:]);
+                if retVal < 0 or retVal >= dataDepth :
+                   raise Exception("Address out of range");
+            else :
+                raise Exception("Bad operation on PC relative address");
     else: # assume base 10
         print("Warning, no radix specified. Assuming base 10\n");
         retVal = int(idata[2:]);
@@ -158,6 +174,10 @@ print("""
 MIF Master 3000
 Alex Stephens - Oct 8 2013
 """);
+
+if len(sys.argv) == 1 :
+    printHelp();
+    quit();
 
 for arg in sys.argv:
     if re.match('.*\.as', arg) != None :
@@ -198,7 +218,7 @@ with open(assemblyFileName, "r") as assemblyFile :
                     print("Warning!!! Exceeded memory depth! Program ends at line "+str(lineNum-1));
                     break;
 
-                matches = re.match('^([a-z]+)\s+([a-z0-9]+),(#?[a-z0-9]+)$', line);
+                matches = re.match('^([a-z]+)\s+([a-z0-9]+),(\$?#?[a-z0-9\-\+]*)$', line);
                 if matches != None:
                     valBin = getOpcodeSafe(matches.group(1), lineNum);
                     valBin = valBin + getRegNumSafe(matches.group(2), lineNum);
@@ -207,8 +227,8 @@ with open(assemblyFileName, "r") as assemblyFile :
                         valBin = valBin + '000';
                         checkWidth(int(valBin, 2), lineNum);
                         mifOut.write("\t"+toHex(memAddr)+"\t:\t"+toHex(int(valBin, 2))+";\n");
-                        memAddr = memAddr + 1;
                         valBin = getImmediateSafe(matches.group(3), lineNum);
+                        memAddr = memAddr + 1;
                         mifOut.write("\t"+toHex(memAddr)+"\t:\t"+toHex(valBin)+";\n");
                     else :
                         valBin = valBin + getRegNumSafe(matches.group(3), lineNum);
